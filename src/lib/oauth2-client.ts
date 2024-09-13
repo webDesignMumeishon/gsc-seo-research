@@ -10,3 +10,5 @@ const oauth2Client = new google.auth.OAuth2(
     CLIENT_SECRET,
     REDIRECT_URI
 );
+
+export default oauth2Client
