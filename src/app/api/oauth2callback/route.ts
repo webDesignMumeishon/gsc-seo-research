@@ -1,11 +1,8 @@
 import { oauth2Client } from "@/lib/oauth2-client";
-import { PrismaClient } from '@prisma/client'
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient()
 
 export async function GET(req: Request) {
-    console.log(req)
-
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
@@ -17,7 +14,7 @@ export async function GET(req: Request) {
 
             const { userId } = JSON.parse(state ?? '');
 
-            const credentials = await prisma.token.create({
+            await prisma.token.create({
                 data: {
                     access_token: tokens?.access_token ?? '',
                     refresh_token: tokens?.refresh_token ?? '',

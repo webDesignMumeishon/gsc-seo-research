@@ -1,20 +1,54 @@
-import React from 'react'
+"use client"
 
-const Sidebar = () => {
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
+import { BarChart2, FileText, } from 'lucide-react'
+
+const sidebarItems = [
+    { name: 'Dashboard', icon: BarChart2, href: '/dashboard' },
+    { name: 'Google Search Console', icon: FileText, href: 'dashboard/search-console' },
+    // { name: 'Keywords', icon: Search, href: 'dashboard/keywords' },
+    // { name: 'Backlinks', icon: LinkIcon, href: 'dashboard/backlinks' },
+    // { name: 'Settings', icon: Settings, href: 'dashboard/settings' },
+    // { name: 'Help', icon: HelpCircle, href: 'dashboard/help' },
+]
+
+export default function Sidebar() {
+    const [activeItem, setActiveItem] = useState('Dashboard')
+
     return (
-        <div className="w-64 bg-white shadow-md">
+        <div className="flex h-screen flex-col border-r  dark:bg-gray-800/40">
             <div className="p-4">
-                <h1 className="text-2xl font-bold text-blue-600">SEO Tool</h1>
+                <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
+                    SEO Tool
+                </h2>
             </div>
-            <nav className="mt-4">
-                <a href="#" className="block py-2 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600">Dashboard</a>
-                <a href="#" className="block py-2 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600">Keywords</a>
-                <a href="#" className="block py-2 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600">Backlinks</a>
-                <a href="#" className="block py-2 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600">Site Audit</a>
-                <a href="#" className="block py-2 px-4 text-gray-600 hover:bg-blue-50 hover:text-blue-600">Reports</a>
-            </nav>
+            <ScrollArea className="flex-1">
+                <nav className="grid gap-1 px-2">
+                    {sidebarItems.map((item) => (
+                        <Button
+                            key={item.name}
+                            variant={activeItem === item.name ? "secondary" : "ghost"}
+                            className={cn(
+                                "w-full justify-start",
+                                activeItem === item.name
+                                    ? "bg-gray-200 dark:bg-gray-700"
+                                    : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                            )}
+                            onClick={() => setActiveItem(item.name)}
+                            asChild
+                        >
+                            <Link href={item.href}>
+                                <item.icon className="mr-2 h-4 w-4" />
+                                {item.name}
+                            </Link>
+                        </Button>
+                    ))}
+                </nav>
+            </ScrollArea>
         </div>
     )
 }
-
-export default Sidebar
