@@ -21,7 +21,7 @@ const Page = () => {
 
     const connectToGSC = async () => {
         try {
-            const response = await axios.get('/api/auth');
+            const response = await axios.get('/api/auth?userId=3');
             if (response.data) {
                 setConnected(true)
             }
