@@ -1,15 +1,19 @@
 "use client"
+import { webmasters_v3 } from 'googleapis'
 import React, { useEffect, useState } from 'react'
+import { ChevronRight, ArrowLeft, ChevronUp, ChevronDown, RotateCcw, Globe, Search, FileText, HelpCircle } from 'lucide-react'
+
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { GetPagesList, GetQueriesByPage } from '@/actions/google'
+import { GetPagesListCache, GetQueriesByPage } from '@/actions/google'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronRight, ArrowLeft, ChevronUp, ChevronDown, RotateCcw } from 'lucide-react'
-import { webmasters_v3 } from 'googleapis'
-
+import { useSiteContext } from '@/context/SiteContext'
+import NoKeywordsData from '@/components/NoKeywordsData'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 interface PageQuery {
     id: number;
     page: string;
@@ -19,27 +23,38 @@ interface PageQuery {
 const Page = () => {
     const [selectedPage, setSelectedPage] = useState<number | null>(null)
     const [queriesData, setQueriesData] = useState<any>([])
-
-
-
-    useEffect(() => {
-        const fetch = async () => {
-            const result = await GetPagesList();
-            setpagesData(result)
-        }
-        fetch()
-    }, [])
-
+    const { selectedSite, loading } = useSiteContext();
     const [pagesData, setpagesData] = useState<PageQuery[]>([])
     const [minPosition, setMinPosition] = useState(1)
     const [maxPosition, setMaxPosition] = useState(100)
     const [queryLength, setQueryLength] = useState('all')
+    const [showQuestions, setShowQuestions] = useState(true)
+
+    const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i
+
+    useEffect(() => {
+        const fetch = async (page: string) => {
+            const result = await GetPagesListCache(page);
+            setpagesData(result)
+        }
+
+        if (selectedSite !== null && selectedSite !== undefined) {
+            setSelectedPage(null)
+            fetch(selectedSite.name)
+        }
+    }, [selectedSite])
+
+
 
     const handlePageClick = async (pageId: number, pageUrl: string) => {
-        const result = await GetQueriesByPage(pageUrl)
-        setQueriesData(result)
-        setSelectedPage(pageId)
-        console.log(result)
+        if (selectedSite?.name !== undefined) {
+            const result = await GetQueriesByPage(selectedSite?.name, pageUrl)
+            setQueriesData(result)
+            setSelectedPage(pageId)
+        }
+        else {
+            throw new Error('Site does not exist')
+        }
     }
 
     const handleBackClick = () => {
@@ -68,6 +83,7 @@ const Page = () => {
         setMinPosition(1)
         setMaxPosition(100)
         setQueryLength('all')
+        setShowQuestions(false)
     }
 
     interface query {
@@ -93,13 +109,21 @@ const Page = () => {
             } else if (queryLength === 'long') {
                 lengthMatch = keyword.split(' ').length > 4
             }
-            return positionMatch && lengthMatch
+            const questionMatch = showQuestions ? questionRegex.test(keyword) : true
+            return positionMatch && lengthMatch && questionMatch
         })
         : []
 
+    if (loading) {
+        return <h1>Loading</h1>
+    }
+
+    if (pagesData.length === 0) {
+        return <NoKeywordsData />
+    }
 
     return (
-        <Card className="mt-6 mx-6 w-full">
+        <Card className="mt-6 mx-6">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">
                     {selectedPage === null ? 'Pages and Queries Overview' : `Queries for ${pagesData.find(p => p.id === selectedPage)?.page}`}
@@ -144,7 +168,6 @@ const Page = () => {
                         </div>
                         <p className='text-sm'>and</p>
                         <div className="flex items-center">
-                            {/* <label htmlFor="maxPosition" className="mr-2 text-sm font-medium">Position:</label> */}
                             <div className="flex items-center">
                                 <Button
                                     variant="outline"
@@ -186,6 +209,15 @@ const Page = () => {
                                     <SelectItem value="long">Long (5+ words)</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Switch
+                                id="show-questions"
+                                checked={showQuestions}
+                                onCheckedChange={setShowQuestions}
+                            />
+                            <Label htmlFor="show-questions">Show Questions</Label>
+                            <HelpCircle className="h-4 w-4" />
                         </div>
                         <Button variant="outline" onClick={resetFilters}>
                             <RotateCcw className="h-4 w-4 mr-2" />

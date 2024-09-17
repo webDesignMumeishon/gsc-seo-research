@@ -2,12 +2,14 @@
 
 import { oauth2Client } from '@/lib/oauth2-client';
 import { google } from 'googleapis'
+import { unstable_cache } from 'next/cache';
+import { GetUserToken } from './token';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
 
-export const GetPagesList = async () => {
+export const GetPagesList = async (page: string) => {
     oauth2Client.setCredentials({
         access_token: 'ya29.a0AcM612yWfIYNaZELBGaawA6jwcMViLw-WybNCla7LICVo1lvblXyxl7dr0o_xcbIOhPbKaxuFSmRQ6a5s_RtB1LQEhABiB8YWW74jYoSP2cZu1UvxwX9n6g5TOYfK4eo_1kysVkkg9s8DcdhSe6awoLesPOMh39ItDFwBxwmaCgYKAY0SARISFQHGX2MiCw1NsxEnGFx07H-mL82gFQ0175',
         refresh_token: '1//0htOaMw2GQIf9CgYIARAAGBESNwF-L9IrCsG3XmwJoGuG7HlUITL8l1jji9X22HvsdmKHyU6KykA3Jc3xvbf8SmWaefg9nAemHQc'
@@ -18,10 +20,8 @@ export const GetPagesList = async () => {
         auth: oauth2Client,
     });
 
-    // const res = await webmasters.sites.list();
-
     const response = await webmasters.searchanalytics.query({
-        siteUrl: 'sc-domain:spokaneroofing.co',
+        siteUrl: page,
         requestBody: {
             startDate,
             endDate,
@@ -41,6 +41,10 @@ export const GetPagesList = async () => {
         return acc;
     }, {});
 
+    if (pageQueryCounts === undefined) {
+        return []
+    }
+
     // Transform the results into the desired format
     const result = Object.entries(pageQueryCounts).map(([page, queries]: any[], index: number) => ({
         id: index,
@@ -51,7 +55,16 @@ export const GetPagesList = async () => {
     return result
 }
 
-export const GetQueriesByPage = async (pageUrl: string) => {
+export const GetPagesListCache = unstable_cache(
+    async (page: string) => {
+        return await GetPagesList(page);
+    },
+    ['pages-list'],
+    { revalidate: 86400 } // 86400 seconds = 1 day
+);
+
+export const GetQueriesByPage = async (siteUrl: string, pageUrl: string) => {
+
     oauth2Client.setCredentials({
         access_token: 'ya29.a0AcM612yWfIYNaZELBGaawA6jwcMViLw-WybNCla7LICVo1lvblXyxl7dr0o_xcbIOhPbKaxuFSmRQ6a5s_RtB1LQEhABiB8YWW74jYoSP2cZu1UvxwX9n6g5TOYfK4eo_1kysVkkg9s8DcdhSe6awoLesPOMh39ItDFwBxwmaCgYKAY0SARISFQHGX2MiCw1NsxEnGFx07H-mL82gFQ0175',
         refresh_token: '1//0htOaMw2GQIf9CgYIARAAGBESNwF-L9IrCsG3XmwJoGuG7HlUITL8l1jji9X22HvsdmKHyU6KykA3Jc3xvbf8SmWaefg9nAemHQc'
@@ -63,7 +76,7 @@ export const GetQueriesByPage = async (pageUrl: string) => {
     });
 
     const response = await webmasters.searchanalytics.query({
-        siteUrl: 'sc-domain:spokaneroofing.co',
+        siteUrl,
         requestBody: {
             startDate,
             endDate,
@@ -87,3 +100,35 @@ export const GetQueriesByPage = async (pageUrl: string) => {
 
     return queries
 }
+
+export const GetSites = async (userId: number) => {
+    const token = await GetUserToken(userId)
+
+    oauth2Client.setCredentials({
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token
+    })
+
+    const webmasters = google.webmasters({
+        version: 'v3',
+        auth: oauth2Client,
+    });
+
+    const response = await webmasters.sites.list();
+    const sites = response.data.siteEntry;
+
+    return sites?.map((site, id) => {
+        return {
+            id: String(id),
+            name: site.siteUrl || ''
+        }
+    }) ?? []
+}
+
+export const GetSitesCache = unstable_cache(
+    async (userId: number) => {
+        return await GetSites(userId);
+    },
+    ['sites-list'],
+    { revalidate: 86400 } // 86400 seconds = 1 day
+);

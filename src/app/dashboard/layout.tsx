@@ -1,26 +1,31 @@
-import React from 'react'
-
+import React, { useState } from 'react'
 import Sidebar from '@/components/Sidebar';
 import { GetUserToken } from '@/actions/token';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react'
+import WebsiteSelector from '@/components/WebsiteSelector';
+import { SiteProvider } from '@/context/SiteContext';
 
-
-export default async function DashboardLayout({
-    children
-}: {
-    children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children, params }: { children: React.ReactNode, params: any }) {
     const token = await GetUserToken(3);
 
     if (token !== null) {
         return (
-            <div className="flex h-screen bg-gray-100">
-                <Sidebar />
-                {children}
-            </div>
+            <SiteProvider>
+                <div className="flex h-screen bg-gray-100">
+                    <Sidebar />
+                    <div className='flex flex-col w-full'>
+                        <div className='flex'>
+                            <WebsiteSelector />
+                        </div>
+                        {children}
+                    </div>
+                </div>
+            </SiteProvider>
+
+
         );
     }
 

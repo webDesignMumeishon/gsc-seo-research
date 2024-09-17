@@ -8,6 +8,7 @@ export async function GET(req: Request) {
     const SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly'];
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline', // Allows us to get a refresh token
+        prompt: 'consent',
         scope: SCOPES,
         state: JSON.stringify({ userId }),
     });

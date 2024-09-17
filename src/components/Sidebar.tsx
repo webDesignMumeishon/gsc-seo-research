@@ -23,7 +23,7 @@ export default function Sidebar() {
         <div className="flex h-screen flex-col border-r  dark:bg-gray-800/40">
             <div className="p-4">
                 <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-                    SEO Tool
+                    ConsoleInsight
                 </h2>
             </div>
             <ScrollArea className="flex-1">
