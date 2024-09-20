@@ -31,7 +31,7 @@ export default function Page() {
     }
 
     return (
-        <Card className="mt-6 mx-6 w-full">
+        <Card className="mt-6 w-full">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>
                 <CardDescription>Manage your connected Google Search Console properties</CardDescription>

@@ -8,7 +8,7 @@ import { CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react'
 import WebsiteSelector from '@/components/WebsiteSelector';
 import { SiteProvider } from '@/context/SiteContext';
 
-export default async function DashboardLayout({ children, params }: { children: React.ReactNode, params: any }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {
     const token = await GetUserToken(3);
 
     if (token !== null) {
@@ -20,18 +20,18 @@ export default async function DashboardLayout({ children, params }: { children: 
                         <div className='flex'>
                             <WebsiteSelector />
                         </div>
-                        {children}
+                        <div className='p-6'>
+                            {children}
+                        </div>
                     </div>
                 </div>
             </SiteProvider>
-
-
         );
     }
 
     return (
         <div className="flex h-screen bg-gray-100 items-center">
-            <Card className="w-full max-w-md mx-auto">
+            <Card className="w-full">
                 <CardHeader>
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-2xl font-bold">Google Search Console</CardTitle>

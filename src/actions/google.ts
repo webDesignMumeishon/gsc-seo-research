@@ -132,3 +132,70 @@ export const GetSitesCache = unstable_cache(
     ['sites-list'],
     { revalidate: 86400 } // 86400 seconds = 1 day
 );
+
+
+export const GetQueries = async (userId: number, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
+    const token = await GetUserToken(userId)
+
+    oauth2Client.setCredentials({
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token
+    })
+
+    const webmasters = google.webmasters({
+        version: 'v3',
+        auth: oauth2Client,
+    });
+
+    // Define the request body
+    const request = {
+        startDate: '2024-01-01', // Adjust start date
+        endDate: '2024-08-31', // Adjust end date
+        dimensions: ['query', 'date'], // Add 'date' to group by date
+        searchType: 'web', // Type of search data (web, image, video)
+        rowLimit: 25000 // Adjust if needed
+    };
+
+    try {
+        const response = await webmasters.searchanalytics.query({
+            siteUrl: siteUrl,
+            requestBody: request
+        });
+
+        const rows = response.data.rows || [];
+
+        // Group by month
+        const monthlyData = rows.reduce((acc: any, row) => {
+            const query = row?.keys?.[0]; // The search query
+            const date = row?.keys?.[1]; // The date
+            const impressions = row.impressions;
+            const clicks = row.clicks;
+
+            const month = date?.slice(0, 7); // Extract 'YYYY-MM' from 'YYYY-MM-DD'
+
+            if (!acc[month]) {
+                acc[month] = { impressions: 0, clicks: 0 };
+            }
+
+            acc[month].impressions += impressions;
+            acc[month].clicks += clicks;
+
+            return acc;
+        }, {});
+
+        const result = []
+
+        for (const element in monthlyData) {
+            result.push({ month: element, impressions: monthlyData[element].impressions, clicks: monthlyData[element].clicks })
+        }
+
+        result.sort((a, b) => {
+            return a.month.localeCompare(b.month);
+        });
+        return result;
+
+    } catch (error) {
+        console.error('Error fetching search analytics:', error);
+        return []
+    }
+}

@@ -5,12 +5,12 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { BarChart2, FileText, } from 'lucide-react'
+import { BarChart2, ClipboardList, FileText, Search, } from 'lucide-react'
 
 const sidebarItems = [
     { name: 'Dashboard', icon: BarChart2, href: '/dashboard' },
-    { name: 'Google Search Console', icon: FileText, href: 'dashboard/search-console' },
-    // { name: 'Keywords', icon: Search, href: 'dashboard/keywords' },
+    { name: 'Connections', icon: FileText, href: '/dashboard/search-console' },
+    { name: 'Summary', icon: ClipboardList, href: '/dashboard/summary' },
     // { name: 'Backlinks', icon: LinkIcon, href: 'dashboard/backlinks' },
     // { name: 'Settings', icon: Settings, href: 'dashboard/settings' },
     // { name: 'Help', icon: HelpCircle, href: 'dashboard/help' },
@@ -18,7 +18,6 @@ const sidebarItems = [
 
 export default function Sidebar() {
     const [activeItem, setActiveItem] = useState('Dashboard')
-
     return (
         <div className="flex h-screen flex-col border-r  dark:bg-gray-800/40">
             <div className="p-4">
@@ -41,7 +40,7 @@ export default function Sidebar() {
                             onClick={() => setActiveItem(item.name)}
                             asChild
                         >
-                            <Link href={item.href}>
+                            <Link href={`${item.href}`}>
                                 <item.icon className="mr-2 h-4 w-4" />
                                 {item.name}
                             </Link>

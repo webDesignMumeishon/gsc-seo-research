@@ -6,7 +6,7 @@ import { Search, FileText } from 'lucide-react'
 
 const NoKeywordsData = () => {
     return (
-        <Card className="mt-6 mx-6">
+        <Card>
             <CardContent>
                 <Alert className="my-6">
                     <Search className="w-5 h-5" />
