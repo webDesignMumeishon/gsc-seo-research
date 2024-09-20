@@ -5,15 +5,13 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { BarChart2, ClipboardList, FileText, Search, } from 'lucide-react'
+import { BarChart2, ClipboardList, ClipboardListIcon, FileText, Search, SearchIcon, ServerIcon, } from 'lucide-react'
 
 const sidebarItems = [
     { name: 'Dashboard', icon: BarChart2, href: '/dashboard' },
-    { name: 'Connections', icon: FileText, href: '/dashboard/search-console' },
-    { name: 'Summary', icon: ClipboardList, href: '/dashboard/summary' },
-    // { name: 'Backlinks', icon: LinkIcon, href: 'dashboard/backlinks' },
-    // { name: 'Settings', icon: Settings, href: 'dashboard/settings' },
-    // { name: 'Help', icon: HelpCircle, href: 'dashboard/help' },
+    { name: 'Connections', icon: ServerIcon, href: '/dashboard/search-console' },
+    { name: 'Summary', icon: ClipboardListIcon, href: '/dashboard/summary' },
+    { name: 'Indexing', icon: SearchIcon, href: 'dashboard/indexing' },
 ]
 
 export default function Sidebar() {
