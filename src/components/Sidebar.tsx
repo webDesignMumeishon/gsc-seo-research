@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { BarChart2, ClipboardList, ClipboardListIcon, FileText, Search, SearchIcon, ServerIcon, } from 'lucide-react'
+import { BarChart2, ClipboardListIcon, SearchIcon, ServerIcon, } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
