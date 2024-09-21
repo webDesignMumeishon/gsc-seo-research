@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, Search } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, Search, ArrowDown, ArrowUp } from 'lucide-react'
 import { webmasters_v3 } from 'googleapis'
 
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from './ui/scroll-area'
 import { QueryLengthFilter } from '@/enums/filters'
+import MetricSorting from '@/components/atoms/MetricSorting'
 
 type Props = {
     queriesData: any[]
@@ -25,14 +26,14 @@ interface query {
 }
 
 // Define the sorting directions
-enum SortDirection {
+export enum SortDirection {
     Ascending = 'asc',
     Descending = 'desc',
     None = 'none',  // Default state when there's no sorting
 }
 
 // Define the fields you want to sort by
-enum SortField {
+export enum SortField {
     Query = 'query',
     Impressions = 'impressions',
     Clicks = 'clicks',
@@ -159,12 +160,7 @@ const PageQueries = ({
             if (valueA > valueB) return sort.direction === SortDirection.Ascending ? 1 : -1;
             return 0;
         });
-        console.log('After', filteredQueries)
     }
-
-
-
-
 
     return (
         <>
@@ -269,9 +265,15 @@ const PageQueries = ({
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Query</TableHead>
-                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Impressions)}>Impressions</TableHead>
-                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Clicks)}>Clicks</TableHead>
-                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Position)}>Position</TableHead>
+                                    <TableHead className="text-right hover:cursor-pointer" onClick={() => handleSort(SortField.Impressions)} >
+                                        <MetricSorting name={SortField.Impressions} direction={sort.direction} isEnabled={sort.isEnabled} field={sort.field} />
+                                    </TableHead>
+                                    <TableHead className="text-right hover:cursor-pointer" onClick={() => handleSort(SortField.Clicks)}>
+                                        <MetricSorting name={SortField.Clicks} direction={sort.direction} isEnabled={sort.isEnabled} field={sort.field} />
+                                    </TableHead>
+                                    <TableHead className="text-right hover:cursor-pointer" onClick={() => handleSort(SortField.Position)}>
+                                        <MetricSorting name={SortField.Position} direction={sort.direction} isEnabled={sort.isEnabled} field={sort.field} />
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
