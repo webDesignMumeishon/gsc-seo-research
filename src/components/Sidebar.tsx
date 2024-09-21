@@ -1,11 +1,12 @@
 "use client"
-
+import Image from 'next/image'
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { BarChart2, ClipboardList, ClipboardListIcon, FileText, Search, SearchIcon, ServerIcon, } from 'lucide-react'
+
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { BarChart2, ClipboardList, ClipboardListIcon, FileText, Search, SearchIcon, ServerIcon, } from 'lucide-react'
 
 const sidebarItems = [
     { name: 'Dashboard', icon: BarChart2, href: '/dashboard' },
@@ -18,9 +19,11 @@ export default function Sidebar() {
     const [activeItem, setActiveItem] = useState('Dashboard')
     return (
         <div className="flex h-screen flex-col border-r  dark:bg-gray-800/40">
-            <div className="p-4">
+            <div className="p-2">
                 <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-                    ConsoleInsight
+                    <Link href="/">
+                        <Image src="/logo.png" alt="Console Insight Logo" width={200} height={100} />
+                    </Link>
                 </h2>
             </div>
             <ScrollArea className="flex-1">
