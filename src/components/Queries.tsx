@@ -24,6 +24,28 @@ interface query {
     position: number;
 }
 
+// Define the sorting directions
+enum SortDirection {
+    Ascending = 'asc',
+    Descending = 'desc',
+    None = 'none',  // Default state when there's no sorting
+}
+
+// Define the fields you want to sort by
+enum SortField {
+    Query = 'query',
+    Impressions = 'impressions',
+    Clicks = 'clicks',
+    Position = 'position',
+}
+
+// Define a type for the sorting state
+type SortState = {
+    isEnabled: boolean
+    field: SortField;
+    direction: SortDirection;
+};
+
 const PageQueries = ({
     queriesData,
     handleBackClick,
@@ -32,6 +54,11 @@ const PageQueries = ({
     const [maxPosition, setMaxPosition] = useState(100)
     const [queryLength, setQueryLength] = useState<QueryLengthFilter>(QueryLengthFilter.All)
     const [showQuestions, setShowQuestions] = useState(false)
+    const [sort, setSorting] = useState<SortState>({
+        isEnabled: false,
+        field: SortField.Query,
+        direction: SortDirection.None
+    })
 
     const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i
 
@@ -58,6 +85,11 @@ const PageQueries = ({
         setMaxPosition(100)
         setQueryLength(QueryLengthFilter.All)
         setShowQuestions(false)
+        setSorting({
+            isEnabled: false,
+            field: SortField.Query,
+            direction: SortDirection.None
+        })
     }
 
     const EmptyQueries = () => {
@@ -83,6 +115,56 @@ const PageQueries = ({
         const questionMatch = showQuestions ? questionRegex.test(keyword) : true
         return positionMatch && lengthMatch && questionMatch
     })
+
+    const handleSort = (field: SortField) => {
+        setSorting((prevState) => {
+            // If sorting the same field, toggle direction
+            if (prevState.field === field) {
+                const newDirection = prevState.direction === SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
+                return { ...prevState, direction: newDirection, isEnabled: true };
+            }
+
+            // If it's a new field, set to ascending by default
+            return { field, direction: SortDirection.Ascending, isEnabled: true };
+        });
+    };
+
+    if (sort.isEnabled) {
+        filteredQueries.sort((a, b) => {
+            let valueA: any, valueB: any;
+
+            // Determine the field to sort by
+            switch (sort.field) {
+                case SortField.Impressions:
+                    valueA = a.impressions;
+                    valueB = b.impressions;
+                    break;
+                case SortField.Clicks:
+                    valueA = a.clicks;
+                    valueB = b.clicks;
+                    break;
+                case SortField.Position:
+                    valueA = a.position;
+                    valueB = b.position;
+                    break;
+                case SortField.Query:
+                default:
+                    valueA = a.keys[0].toLowerCase();
+                    valueB = b.keys[0].toLowerCase();
+                    break;
+            }
+
+            // Apply sorting direction
+            if (valueA < valueB) return sort.direction === SortDirection.Ascending ? -1 : 1;
+            if (valueA > valueB) return sort.direction === SortDirection.Ascending ? 1 : -1;
+            return 0;
+        });
+        console.log('After', filteredQueries)
+    }
+
+
+
+
 
     return (
         <>
@@ -175,7 +257,7 @@ const PageQueries = ({
                     Reset Filters
                 </Button>
             </div>
-            <ScrollArea className="h-[600px] w-full" style={{ border: 'blue solid 1px' }}>
+            <ScrollArea className="h-[600px] w-full">
                 <Button variant="ghost" size="sm" onClick={handleBackClick} className="mb-4">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Pages
@@ -187,9 +269,9 @@ const PageQueries = ({
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Query</TableHead>
-                                    <TableHead className="text-right">Impressions</TableHead>
-                                    <TableHead className="text-right">Clicks</TableHead>
-                                    <TableHead className="text-right">Position</TableHead>
+                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Impressions)}>Impressions</TableHead>
+                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Clicks)}>Clicks</TableHead>
+                                    <TableHead className="text-right" onClick={() => handleSort(SortField.Position)}>Position</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

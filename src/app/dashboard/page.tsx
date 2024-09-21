@@ -71,7 +71,7 @@ const Page = () => {
                     />
                 )
                     :
-                    <ScrollArea className="h-[600px] w-full" style={{ border: 'red solid 1px' }}>
+                    <ScrollArea className="h-[600px] w-full">
                         {selectedPage === null && (
                             <ListPages pagesData={pagesData} handlePageClick={handlePageClick} />
                         )}
