@@ -1,32 +1,27 @@
 "use client"
-// context/SiteContext.tsx
-import { GetSites, GetSitesCache } from '@/actions/google';
+import { GetSites, GetSitesCache, Sites } from '@/actions/google';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 
-type Site = {
-    id: string;
-    name: string;
-    // Add other site properties
-};
-
 type SiteContextType = {
-    sites: Site[] | null;
-    selectedSite: Site | null;
-    setSelectedSite: (site: Site) => void;
+    sites: Sites[] | null;
+    selectedSite: Sites | null;
+    setSelectedSite: (site: Sites) => void;
     loading: boolean
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [sites, setSites] = useState<Site[] | null>(null);
+    const [sites, setSites] = useState<Sites[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [selectedSite, setSelectedSite] = useState<Site | null>(null);
+    const [selectedSite, setSelectedSite] = useState<Sites | null>(null);
 
     useEffect(() => {
         const fetchSites = async () => {
-            const fetchedSites = await GetSitesCache(3);
+            const fetchedSites = await GetSitesCache(1);
+            console.log(fetchedSites)
             setSites(fetchedSites);
             if (fetchedSites && fetchedSites.length > 0) {
                 setSelectedSite(fetchedSites[0]);
@@ -37,7 +32,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     return (
-        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading }}>
+        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading, setLoading }}>
             {children}
         </SiteContext.Provider>
     );

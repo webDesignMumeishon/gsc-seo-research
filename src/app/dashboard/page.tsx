@@ -4,36 +4,38 @@ import React, { useEffect, useState } from 'react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { GetPagesListCache, GetQueriesByPage } from '@/actions/google'
+import { GetPagesListCache } from '@/actions/google'
 import { useSiteContext } from '@/context/SiteContext'
 import NoKeywordsData from '@/components/NoKeywordsData'
-import { PageQuery } from '@/interfaces'
+import { PageQuery } from '@/types'
 import ListPages from '@/components/ListPages'
 import PageQueries from '@/components/Queries'
 
 
 const Page = () => {
     const [selectedPage, setSelectedPage] = useState<number | null>(null)
-    const [queriesData, setQueriesData] = useState<any>([])
-    const { selectedSite, loading } = useSiteContext();
+    const { selectedSite } = useSiteContext();
     const [pagesData, setpagesData] = useState<PageQuery[]>([])
+
+    const [localLoading, setLocalLoading] = useState(true)
+
 
     useEffect(() => {
         const fetch = async (page: string) => {
-            const result = await GetPagesListCache(page);
+            setLocalLoading(true)
+            const result = await GetPagesListCache(page, 1);
             setpagesData(result)
+            setLocalLoading(false)
         }
 
         if (selectedSite !== null && selectedSite !== undefined) {
             setSelectedPage(null)
-            fetch(selectedSite.name)
+            fetch(selectedSite.url)
         }
     }, [selectedSite])
 
     const handlePageClick = async (pageId: number, pageUrl: string) => {
-        if (selectedSite?.name !== undefined) {
-            const result = await GetQueriesByPage(selectedSite?.name, pageUrl)
-            setQueriesData(result)
+        if (selectedSite?.url !== undefined) {
             setSelectedPage(pageId)
         }
         else {
@@ -45,13 +47,14 @@ const Page = () => {
         setSelectedPage(null)
     }
 
-    if (loading) {
+    if (localLoading) {
         return <h1>Loading</h1>
     }
 
     if (pagesData.length === 0) {
         return <NoKeywordsData />
     }
+
 
     return (
         <Card className="mt-6">
@@ -66,7 +69,8 @@ const Page = () => {
             <CardContent>
                 {selectedPage !== null ? (
                     <PageQueries
-                        queriesData={queriesData}
+                        site={selectedSite?.url || ''}
+                        pageUrl={pagesData.find(p => p.id === selectedPage)?.page || ''}
                         handleBackClick={handleBackClick}
                     />
                 )

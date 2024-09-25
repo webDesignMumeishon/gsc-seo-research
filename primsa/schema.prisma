@@ -9,12 +9,29 @@ datasource db {
 }
 
 model Token {
-    id            String @id @default(cuid())
+    id            Int    @id @default(autoincrement())
     access_token  String
     refresh_token String
+    accountId     String
     user          User   @relation(fields: [userId], references: [id])
     userId        Int
-    @@map(name: "token")
+    Site          Site[]
+
+    // Add a unique constraint for userId and accountId
+    @@unique([userId, accountId])
+    @@map(name: "tokens")
+}
+
+model Site {
+    id         Int    @id @default(autoincrement())
+    url        String
+    permission String
+    userId     Int
+    tokenId    Int
+    user       User   @relation(fields: [userId], references: [id])
+    token      Token  @relation(fields: [tokenId], references: [id])
+
+    @@map(name: "sites")
 }
 
 model User {
@@ -24,6 +41,7 @@ model User {
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
     token     Token[]
+    Site      Site[]
 
     @@map(name: "users")
 }

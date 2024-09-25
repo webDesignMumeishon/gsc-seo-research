@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, Search, ArrowDown, ArrowUp } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, Search, ArrowDown, ArrowUp, XIcon } from 'lucide-react'
 import { webmasters_v3 } from 'googleapis'
+import moment from 'moment'
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -11,9 +13,16 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from './ui/scroll-area'
 import { QueryLengthFilter } from '@/enums/filters'
 import MetricSorting from '@/components/atoms/MetricSorting'
+import { Calendar } from "@/components/ui/calendar"
+import { GetQueriesByPage } from '@/actions/google'
+import EmptyQueries from './EmptyQueries'
+
+const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i
+
 
 type Props = {
-    queriesData: any[]
+    site: string
+    pageUrl: string
     handleBackClick: any
 }
 
@@ -24,6 +33,8 @@ interface query {
     keys: string[];
     position: number;
 }
+
+type DateRange = '7d' | '30d' | '90d' | 'custom'
 
 // Define the sorting directions
 export enum SortDirection {
@@ -47,12 +58,36 @@ type SortState = {
     direction: SortDirection;
 };
 
+class DateService {
+    static getDaysRange(days: number) {
+        const today = moment();
+        const pastDate = moment().subtract(days, 'days');
+        return {
+            from: pastDate.format('YYYY-MM-DD'),
+            to: today.format('YYYY-MM-DD'),
+        };
+    }
+}
+
+function convertDateIntoNumber(date: DateRange) {
+    if (date === '30d') return 30
+    if (date === '90d') return 90
+    if (date === '7d') return 7
+    return 30
+}
+
 const PageQueries = ({
-    queriesData,
+    site,
+    pageUrl,
     handleBackClick,
 }: Props) => {
+    const [queriesData, setQueriesData] = useState<any>([])
+    const [loading, setLoading] = useState<boolean>(true)
     const [minPosition, setMinPosition] = useState(1)
     const [maxPosition, setMaxPosition] = useState(100)
+    const [dateRange, setDateRange] = useState<DateRange>('30d')
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+    const [customDateRange, setCustomDateRange] = useState<{ from: Date | undefined; to: Date | undefined; } | undefined>(undefined)
     const [queryLength, setQueryLength] = useState<QueryLengthFilter>(QueryLengthFilter.All)
     const [showQuestions, setShowQuestions] = useState(false)
     const [sort, setSorting] = useState<SortState>({
@@ -61,7 +96,25 @@ const PageQueries = ({
         direction: SortDirection.None
     })
 
-    const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true)
+            if (customDateRange?.from !== undefined && customDateRange?.to !== undefined) {
+                const result = await GetQueriesByPage(site, pageUrl, moment(customDateRange?.from).format('YYYY-MM-DD'), moment(customDateRange?.to).format('YYYY-MM-DD'))
+                setQueriesData(result)
+            }
+            else {
+                const { from, to } = DateService.getDaysRange(convertDateIntoNumber(dateRange))
+                const result = await GetQueriesByPage(site, pageUrl, from, to)
+                setQueriesData(result)
+            }
+            setLoading(false)
+        }
+        if (dateRange !== 'custom' || (dateRange === 'custom' && customDateRange?.from !== undefined && customDateRange?.to !== undefined)) {
+            fetchData()
+        }
+    }, [dateRange, customDateRange])
+
 
     const incrementPosition = (setter: React.Dispatch<React.SetStateAction<number>>) => {
         setter(prev => Math.min(prev + 1, 100))
@@ -93,14 +146,6 @@ const PageQueries = ({
         })
     }
 
-    const EmptyQueries = () => {
-        return (<div className="flex flex-col items-center justify-center text-gray-500">
-            <Search className="h-8 w-8 mb-2" />
-            <p className="text-lg font-medium">No queries found</p>
-            <p className="text-sm">Try adjusting your filters to see more results</p>
-        </div>)
-    }
-
     const filteredQueries: query[] = queriesData.filter((query: webmasters_v3.Schema$ApiDataRow) => {
         const keyword = query?.keys?.[0] ?? ''
         const position = query.position ?? 0
@@ -124,7 +169,6 @@ const PageQueries = ({
                 const newDirection = prevState.direction === SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending;
                 return { ...prevState, direction: newDirection, isEnabled: true };
             }
-
             // If it's a new field, set to ascending by default
             return { field, direction: SortDirection.Ascending, isEnabled: true };
         });
@@ -133,8 +177,6 @@ const PageQueries = ({
     if (sort.isEnabled) {
         filteredQueries.sort((a, b) => {
             let valueA: any, valueB: any;
-
-            // Determine the field to sort by
             switch (sort.field) {
                 case SortField.Impressions:
                     valueA = a.impressions;
@@ -162,9 +204,78 @@ const PageQueries = ({
         });
     }
 
+    const handleDateRangeChange = (value: DateRange) => {
+        setDateRange(value)
+        if (value === 'custom') {
+            setIsCalendarOpen(true)
+            setCustomDateRange(undefined)
+        }
+    }
+
+    const formatDateRange = () => {
+        if (dateRange !== 'custom' || !customDateRange) {
+            return dateRange
+        }
+        else {
+            const { from, to } = customDateRange
+            return `${from?.toLocaleDateString()} - ${to?.toLocaleDateString()}`
+        }
+    }
+
+    if (loading) {
+        return <h1>Loading</h1>
+    }
+
     return (
         <>
             <div className="mb-4 flex flex-wrap items-center gap-4">
+                <Select value={dateRange} onValueChange={handleDateRangeChange}>
+                    <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Select date range">
+                            {formatDateRange()}
+                        </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="7d">Last 7 days</SelectItem>
+                        <SelectItem value="30d">Last 30 days</SelectItem>
+                        <SelectItem value="90d">Last 90 days</SelectItem>
+                        <SelectItem value="custom">Custom date range</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Dialog open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Select Custom Date Range</DialogTitle>
+                        </DialogHeader>
+                        <Calendar
+                            mode="range"
+                            selected={customDateRange}
+                            onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined, selectedDay) => {
+                                console.log(range)
+                                if (range !== undefined) {
+                                    if (range.from !== undefined && range.to === undefined) {
+                                        setCustomDateRange({ from: range.from, to: undefined });
+                                    }
+                                    if (range.from !== undefined && range.to !== undefined) {
+                                        setCustomDateRange(range as any);
+                                        setIsCalendarOpen(false)
+                                    }
+                                }
+                                else {
+                                    setCustomDateRange(undefined)
+                                }
+                            }}
+                            numberOfMonths={2}
+                            className="rounded-md border"
+                        />
+                        <div className="flex justify-end">
+                            <Button onClick={() => setIsCalendarOpen(false)}>
+                                <XIcon className="mr-2 h-4 w-4" />
+                                Close
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
                 <p className='text-sm'>Position between:</p>
                 <div className="flex items-center">
                     <div className="flex items-center">

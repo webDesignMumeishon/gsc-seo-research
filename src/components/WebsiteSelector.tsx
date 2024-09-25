@@ -1,16 +1,16 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { Globe } from 'lucide-react';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Globe } from 'lucide-react';
 import { useSiteContext } from '@/context/SiteContext';
 
 const WebsiteSelector = () => {
     const { sites, selectedSite, setSelectedSite, loading } = useSiteContext();
 
     const handleWebsiteChange = (websiteId: string) => {
-        const website = sites?.find(w => w.id === websiteId)
+        const website = sites?.find(w => w.id === Number(websiteId))
         if (website) {
             setSelectedSite(website)
         }
@@ -26,7 +26,7 @@ const WebsiteSelector = () => {
         <CardHeader>
             <div className="flex items-center justify-between">
                 <CardTitle className="text-2xl font-bold">SEO Dashboard</CardTitle>
-                <Select value={selectedSite?.id} onValueChange={handleWebsiteChange}>
+                <Select value={String(selectedSite?.id)} onValueChange={handleWebsiteChange}>
                     {
                         loading ?
                             <p>Loading</p>
@@ -39,8 +39,8 @@ const WebsiteSelector = () => {
                     }
                     <SelectContent>
                         {sites?.map((website) => (
-                            <SelectItem key={website.id} value={website.id}>
-                                {website.name}
+                            <SelectItem key={website.id} value={String(website.id)}>
+                                {website.url}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -48,7 +48,7 @@ const WebsiteSelector = () => {
             </div>
             <CardDescription className="flex items-center mt-2">
                 <Globe className="w-4 h-4 mr-2" />
-                Currently viewing: <span className="font-semibold ml-1">{selectedSite?.name}</span>
+                Currently viewing: <span className="font-semibold ml-1">{selectedSite?.url}</span>
             </CardDescription>
         </CardHeader>
     )

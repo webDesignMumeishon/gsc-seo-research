@@ -4,17 +4,20 @@ import { oauth2Client } from '@/lib/oauth2-client';
 import { google } from 'googleapis'
 import { unstable_cache } from 'next/cache';
 import { GetUserToken } from './token';
+import prisma from "@/lib/prisma";
+import SiteService from '@/services/sites';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
 
-export const GetPagesList = async (page: string) => {
-    oauth2Client.setCredentials({
-        access_token: 'ya29.a0AcM612yWfIYNaZELBGaawA6jwcMViLw-WybNCla7LICVo1lvblXyxl7dr0o_xcbIOhPbKaxuFSmRQ6a5s_RtB1LQEhABiB8YWW74jYoSP2cZu1UvxwX9n6g5TOYfK4eo_1kysVkkg9s8DcdhSe6awoLesPOMh39ItDFwBxwmaCgYKAY0SARISFQHGX2MiCw1NsxEnGFx07H-mL82gFQ0175',
-        refresh_token: '1//0htOaMw2GQIf9CgYIARAAGBESNwF-L9IrCsG3XmwJoGuG7HlUITL8l1jji9X22HvsdmKHyU6KykA3Jc3xvbf8SmWaefg9nAemHQc'
-    })
+export const GetPagesList = async (page: string, userId: number) => {
+    const token = await GetUserToken(userId)
 
+    oauth2Client.setCredentials({
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token
+    })
     const webmasters = google.webmasters({
         version: 'v3',
         auth: oauth2Client,
@@ -56,18 +59,19 @@ export const GetPagesList = async (page: string) => {
 }
 
 export const GetPagesListCache = unstable_cache(
-    async (page: string) => {
-        return await GetPagesList(page);
+    async (page: string, userId: number) => {
+        return await GetPagesList(page, userId);
     },
     ['pages-list'],
     { revalidate: 86400 } // 86400 seconds = 1 day
 );
 
-export const GetQueriesByPage = async (siteUrl: string, pageUrl: string) => {
+export const GetQueriesByPage = async (siteUrl: string, pageUrl: string, startDate: Date, endDate: Date) => {
+    const token = await GetUserToken(3)
 
     oauth2Client.setCredentials({
-        access_token: 'ya29.a0AcM612yWfIYNaZELBGaawA6jwcMViLw-WybNCla7LICVo1lvblXyxl7dr0o_xcbIOhPbKaxuFSmRQ6a5s_RtB1LQEhABiB8YWW74jYoSP2cZu1UvxwX9n6g5TOYfK4eo_1kysVkkg9s8DcdhSe6awoLesPOMh39ItDFwBxwmaCgYKAY0SARISFQHGX2MiCw1NsxEnGFx07H-mL82gFQ0175',
-        refresh_token: '1//0htOaMw2GQIf9CgYIARAAGBESNwF-L9IrCsG3XmwJoGuG7HlUITL8l1jji9X22HvsdmKHyU6KykA3Jc3xvbf8SmWaefg9nAemHQc'
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token
     })
 
     const webmasters = google.webmasters({
@@ -101,28 +105,121 @@ export const GetQueriesByPage = async (siteUrl: string, pageUrl: string) => {
     return queries
 }
 
-export const GetSites = async (userId: number) => {
-    const token = await GetUserToken(userId)
+export interface Sites {
+    id: number
+    url: string
+    permission: string
+}
 
-    oauth2Client.setCredentials({
-        access_token: token?.access_token,
-        refresh_token: token?.refresh_token
-    })
+export const GetSites = async (userId: number): Promise<Sites[]> => {
+    try {
+        const sites = await prisma.site.findMany({
+            where: {
+                userId: userId,
+            },
+            select: {
+                id: true,
+                url: true,
+                permission: true,
+            },
+        });
 
-    const webmasters = google.webmasters({
-        version: 'v3',
+        if (sites.length === 0) {
+            return []
+        }
+
+        return sites
+    } catch (error) {
+        console.log(error)
+        return []
+    }
+}
+
+export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Sites[]> => {
+    try {
+        oauth2Client.setCredentials({
+            access_token: accessToken,
+            refresh_token: refreshToken
+        })
+
+        const webmasters = google.webmasters({
+            version: 'v3',
+            auth: oauth2Client,
+        });
+        const response = await webmasters.sites.list();
+        const sites = response.data.siteEntry;
+
+        const dbSites = await SiteService.getUserSites(userId)
+
+        const urlsInDb = new Set(dbSites.map(item => item.url));
+
+        const filteredSites = sites?.filter(item => !urlsInDb.has(item?.siteUrl as string));
+
+        return filteredSites?.map((site, id) => {
+            return {
+                id: id,
+                url: site.siteUrl || '',
+                permission: site.permissionLevel || ''
+            }
+        }) ?? []
+    } catch (error) {
+        console.log(error)
+        return []
+    }
+}
+
+
+
+
+
+export const saveUserSites = async (accessToken: string, refreshToken: string, userId: number, sites: Sites[]) => {
+    oauth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken })
+    const oauth2 = google.oauth2({
         auth: oauth2Client,
+        version: 'v2',
     });
 
-    const response = await webmasters.sites.list();
-    const sites = response.data.siteEntry;
+    try {
+        const userInfo = await oauth2.userinfo.get();
 
-    return sites?.map((site, id) => {
-        return {
-            id: String(id),
-            name: site.siteUrl || ''
-        }
-    }) ?? []
+        const token = await prisma.token.upsert({
+            where: {
+                userId_accountId: {
+                    userId: userId,
+                    accountId: userInfo.data.id || ''
+                },
+            },
+            update: {}, // No update needed
+            create: {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                userId: userId,
+                accountId: userInfo.data.id || ''
+            }
+        });
+
+        const sitesCreated = await Promise.all(sites.map(async site => {
+            return prisma.site.create({
+                data: {
+                    url: site.url,
+                    permission: site.permission,
+                    userId: userId,
+                    tokenId: token.id
+                },
+                select: {
+                    id: true,
+                    url: true,
+                    permission: true,
+                },
+            })
+        }))
+        console.log(sitesCreated)
+        return sitesCreated
+    } catch (error) {
+        console.log(error)
+    }
+
+
 }
 
 export const GetSitesCache = unstable_cache(
@@ -132,7 +229,6 @@ export const GetSitesCache = unstable_cache(
     ['sites-list'],
     { revalidate: 86400 } // 86400 seconds = 1 day
 );
-
 
 export const GetQueries = async (userId: number, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
     const token = await GetUserToken(userId)

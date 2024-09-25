@@ -5,7 +5,7 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const userId = url.searchParams.get('userId');
 
-    const SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly'];
+    const SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly', 'https://www.googleapis.com/auth/userinfo.profile'];
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline', // Allows us to get a refresh token
         prompt: 'consent',

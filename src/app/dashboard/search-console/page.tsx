@@ -1,11 +1,15 @@
 "use client"
 
 import React, { useState } from 'react'
+import axios from 'axios'
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { XCircle, AlertTriangle } from 'lucide-react'
+import { USER_ID } from '@/utils'
+import { useRouter } from 'next/navigation'
 
 type Property = {
     id: string;
@@ -20,6 +24,9 @@ export default function Page() {
         { id: '3', url: 'https://shop.example.com', lastSync: '3 days ago' },
     ])
 
+    const router = useRouter()
+    const [loading, setLoading] = useState(false)
+
     const disconnectProperty = (id: string) => {
         // In a real application, this would be an API call to disconnect
         setProperties(properties.filter(property => property.id !== id))
@@ -30,12 +37,28 @@ export default function Page() {
         setProperties([])
     }
 
+    const redirectToUrl = async () => {
+        setLoading(true)
+        const url = await axios.get(`/api/auth?userId=${USER_ID}`)
+        console.log(url)
+        router.push(url.data)
+        setLoading(false)
+    }
+
+    if (loading) return <h1>Loading</h1>
+
     return (
-        <Card className="mt-6 w-full">
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>
-                <CardDescription>Manage your connected Google Search Console properties</CardDescription>
-            </CardHeader>
+        <Card className="mt-6 w-full" >
+            <div className='p-6 flex flex-column justify-between'>
+                <CardHeader className='p-0'>
+                    <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>
+                    <CardDescription>Manage your connected Google Search Console properties</CardDescription>
+                </CardHeader>
+                <Button onClick={redirectToUrl}>
+                    Add site
+                </Button>
+            </div>
+
             <CardContent>
                 {properties.length > 0 ? (
                     <Table>

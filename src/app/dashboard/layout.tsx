@@ -9,7 +9,7 @@ import WebsiteSelector from '@/components/WebsiteSelector';
 import { SiteProvider } from '@/context/SiteContext';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {
-    const token = await GetUserToken(3);
+    const token = await GetUserToken(1);
 
     if (token !== null) {
         return (

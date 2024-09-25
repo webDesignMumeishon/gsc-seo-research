@@ -1,5 +1,5 @@
 {
-  "name": "gsc-seo-research",
+  "name": "console-insights",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -45,9 +45,11 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "google-trends-api": "^4.9.2",
     "googleapis": "^144.0.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.441.0",
+    "moment": "^2.30.1",
     "next": "14.2.11",
     "next-themes": "^0.3.0",
     "react": "^18",

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react'
+import { googleTrendsTest } from '@/actions/googleTrends'
+import { Sites } from '@/actions/google'
 
 type Props = {
     pagesData: any[]
@@ -10,11 +12,12 @@ type Props = {
 }
 
 const ListPages = ({ pagesData, handlePageClick }: Props) => {
+    console.log(pagesData)
     return (
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Page page</TableHead>
+                    <TableHead className='text-accent'>Page page</TableHead>
                     <TableHead className="text-right">Query Count</TableHead>
                     <TableHead className="w-[100px]"></TableHead>
                 </TableRow>
