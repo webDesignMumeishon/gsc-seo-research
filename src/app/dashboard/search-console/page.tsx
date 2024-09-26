@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { XCircle, AlertTriangle } from 'lucide-react'
+import { XCircle, AlertTriangle, Check } from 'lucide-react'
 import { USER_ID } from '@/utils'
 import { useRouter } from 'next/navigation'
 
@@ -40,7 +40,6 @@ export default function Page() {
     const redirectToUrl = async () => {
         setLoading(true)
         const url = await axios.get(`/api/auth?userId=${USER_ID}`)
-        console.log(url)
         router.push(url.data)
         setLoading(false)
     }

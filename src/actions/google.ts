@@ -2,7 +2,7 @@
 
 import { oauth2Client } from '@/lib/oauth2-client';
 import { google } from 'googleapis'
-import { unstable_cache } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { GetUserToken } from './token';
 import prisma from "@/lib/prisma";
 import SiteService from '@/services/sites';
@@ -10,6 +10,8 @@ import SiteService from '@/services/sites';
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
+
+const SITES_LIST_CACHE_TAG = 'sites-list'
 
 export const GetPagesList = async (page: string, userId: number) => {
     const token = await GetUserToken(userId)
@@ -213,7 +215,7 @@ export const saveUserSites = async (accessToken: string, refreshToken: string, u
                 },
             })
         }))
-        console.log(sitesCreated)
+        revalidateTag(SITES_LIST_CACHE_TAG)
         return sitesCreated
     } catch (error) {
         console.log(error)
@@ -227,7 +229,7 @@ export const GetSitesCache = unstable_cache(
         return await GetSites(userId);
     },
     ['sites-list'],
-    { revalidate: 86400 } // 86400 seconds = 1 day
+    { tags: [SITES_LIST_CACHE_TAG], revalidate: 86400 } // 86400 seconds = 1 day
 );
 
 export const GetQueries = async (userId: number, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {

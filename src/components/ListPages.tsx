@@ -12,7 +12,6 @@ type Props = {
 }
 
 const ListPages = ({ pagesData, handlePageClick }: Props) => {
-    console.log(pagesData)
     return (
         <Table>
             <TableHeader>

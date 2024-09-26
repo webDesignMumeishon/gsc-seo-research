@@ -1,17 +1,18 @@
 "use client"
 
 import React, { useState } from 'react'
+import { Globe, CheckCircle, Check } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Globe, CheckCircle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { ToastAction } from '@/components/ui/toast'
 import { saveUserSites, Sites } from '@/actions/google'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+
 
 type Props = {
     userWebsites: any[]
@@ -84,6 +85,7 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
                             Connect Selected Websites
                         </Button>
                         <Button >
+                            <Check className="mr-2 h-4 w-4" />
                             <Link href='/dashboard'>
                                 Finish
                             </Link>
