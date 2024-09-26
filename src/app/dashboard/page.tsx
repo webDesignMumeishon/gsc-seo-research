@@ -32,6 +32,9 @@ const Page = () => {
             setSelectedPage(null)
             fetch(selectedSite.url)
         }
+        else {
+            setLocalLoading(false)
+        }
     }, [selectedSite])
 
     const handlePageClick = async (pageId: number, pageUrl: string) => {
@@ -47,8 +50,13 @@ const Page = () => {
         setSelectedPage(null)
     }
 
+
     if (localLoading) {
-        return <h1>Loading</h1>
+        return <h1>LoadingOk</h1>
+    }
+
+    if (localLoading === false && selectedSite === null) {
+        return <h1>No Site Available</h1>
     }
 
     if (pagesData.length === 0) {

@@ -1,8 +1,8 @@
 
 import React from 'react'
 import { USER_ID } from '@/utils'
-import ManageConnections from '@/components/ManageConnections'
 import { GetSitesCache } from '@/actions/google'
+import ManageConnections from '@/components/organisms/ManageConnections'
 
 
 

@@ -5,7 +5,6 @@ import axios from 'axios'
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { XCircle, AlertTriangle, CirclePlus } from 'lucide-react'
 import { USER_ID } from '@/utils'
@@ -13,12 +12,8 @@ import { useRouter } from 'next/navigation'
 import { Sites } from '@/actions/google'
 import { DeleteSite } from '@/actions/sites'
 import { useSiteContext } from '@/context/SiteContext'
+import Alert from '../molecules/Alert'
 
-type Property = {
-    id: string;
-    url: string;
-    lastSync: string;
-}
 
 type Props = {
     userSites: Sites[]
@@ -29,6 +24,7 @@ const ManageConnections = ({ userSites }: Props) => {
 
     const [properties, setProperties] = useState<Sites[]>(userSites)
     const router = useRouter()
+
 
     const disconnectProperty = async (id: number) => {
         const siteId = await DeleteSite(id)
@@ -46,7 +42,7 @@ const ManageConnections = ({ userSites }: Props) => {
     }
 
     return (
-        <Card className="mt-6 w-full" >
+        <Card className="mt-6 w-full" style={{ border: 'red solid 2px' }}>
             <div className='p-6 flex flex-column justify-between'>
                 <CardHeader className='p-0'>
                     <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>
@@ -73,28 +69,16 @@ const ManageConnections = ({ userSites }: Props) => {
                                     <TableCell>{property.url}</TableCell>
                                     <TableCell>{property.permission}</TableCell>
                                     <TableCell className="text-right">
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="destructive" size="sm">
-                                                    <XCircle className="w-4 h-4 mr-2" />
-                                                    Disconnect
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This will disconnect {property.url} from your SEO dashboard. You can always reconnect later.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => disconnectProperty(property.id)}>
-                                                        Disconnect
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        <Alert
+                                            alertDescription={`This will disconnect ${property.url} from your SEO dashboard. You can always reconnect later.`}
+                                            alertTitle={`Are you sure?`}
+                                            alertCallBack={() => { disconnectProperty(property.id) }}
+                                        >
+                                            <Button variant="destructive" size="sm">
+                                                <XCircle className="w-4 h-4 mr-2" />
+                                                Disconnect
+                                            </Button>
+                                        </Alert>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -111,28 +95,16 @@ const ManageConnections = ({ userSites }: Props) => {
                     {properties.length} {properties.length === 1 ? 'property' : 'properties'} connected
                 </p>
                 {properties.length > 0 && (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive">
-                                <AlertTriangle className="w-4 h-4 mr-2" />
-                                Disconnect All
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This will disconnect all your Google Search Console properties from your SEO dashboard. This action cannot be undone.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={disconnectAll}>
-                                    Yes, disconnect all
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <Alert
+                        alertDescription={`This will disconnect all your Google Search Console properties from your SEO dashboard. This action cannot be undone.`}
+                        alertTitle={`Are you absolutely sure?`}
+                        alertCallBack={() => { disconnectAll() }}
+                    >
+                        <Button variant="destructive" size="sm">
+                            <AlertTriangle className="w-4 h-4 mr-2" />
+                            Disconnect All
+                        </Button>
+                    </Alert>
                 )}
             </CardFooter>
         </Card>

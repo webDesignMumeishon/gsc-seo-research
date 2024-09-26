@@ -31,6 +31,8 @@ model Site {
     user       User   @relation(fields: [userId], references: [id])
     token      Token  @relation(fields: [tokenId], references: [id])
 
+    // Add a unique constraint for url and userId. This means a user can't have the same site more than once
+    @@unique([url, userId])
     @@map(name: "sites")
 }
 

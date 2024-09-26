@@ -23,6 +23,7 @@ type Props = {
 
 const Connections = ({ userWebsites, access_token, refresh_token, userId }: Props) => {
     const [selectedWebsites, setSelectedWebsites] = useState<Sites[]>([])
+    const [loading, setLoading] = useState(false);
     const router = useRouter()
 
     const { toast } = useToast()
@@ -33,18 +34,26 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
     }
 
     const handleSubmit = async () => {
-        const sitesCreated = await saveUserSites(access_token, refresh_token, Number(userId), selectedWebsites)
-        toast({
-            title: "Scheduled: Catch up ",
-            description: "Friday, February 10, 2023 at 5:57 PM",
-            action: (
-                <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-            ),
-        })
-        router.refresh();
+        try {
+            setLoading(true)
+            const sitesCreated = await saveUserSites(access_token, refresh_token, Number(userId), selectedWebsites)
+            toast({
+                title: "Scheduled: Catch up ",
+                description: "Friday, February 10, 2023 at 5:57 PM",
+                action: (
+                    <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+                ),
+            })
+            router.refresh();
+        } finally {
+            setLoading(false)
+        }
     }
+
+    if (loading) return <h1>Adding Site</h1>
+
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4" >
             <Card className="w-full max-w-4xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold flex items-center">
