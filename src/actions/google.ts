@@ -6,12 +6,13 @@ import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { GetUserToken } from './token';
 import prisma from "@/lib/prisma";
 import SiteService from '@/services/sites';
+import { GetSites } from './sites';
+import { SITES_LIST_CACHE_TAG } from '@/utils';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
 
-const SITES_LIST_CACHE_TAG = 'sites-list'
 
 export const GetPagesList = async (page: string, userId: number) => {
     const token = await GetUserToken(userId)
@@ -113,30 +114,6 @@ export interface Sites {
     permission: string
 }
 
-export const GetSites = async (userId: number): Promise<Sites[]> => {
-    try {
-        const sites = await prisma.site.findMany({
-            where: {
-                userId: userId,
-            },
-            select: {
-                id: true,
-                url: true,
-                permission: true,
-            },
-        });
-
-        if (sites.length === 0) {
-            return []
-        }
-
-        return sites
-    } catch (error) {
-        console.log(error)
-        return []
-    }
-}
-
 export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Sites[]> => {
     try {
         oauth2Client.setCredentials({
@@ -169,10 +146,6 @@ export const GetSitesGoogle = async (accessToken: string, refreshToken: string, 
         return []
     }
 }
-
-
-
-
 
 export const saveUserSites = async (accessToken: string, refreshToken: string, userId: number, sites: Sites[]) => {
     oauth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken })

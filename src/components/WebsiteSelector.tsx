@@ -5,6 +5,7 @@ import { Globe } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSiteContext } from '@/context/SiteContext';
+import Selector from './molecules/Selector';
 
 const WebsiteSelector = () => {
     const { sites, selectedSite, setSelectedSite, loading } = useSiteContext();
@@ -22,29 +23,12 @@ const WebsiteSelector = () => {
         }
     }, [selectedSite])
 
+
     return (
         <CardHeader>
             <div className="flex items-center justify-between">
                 <CardTitle className="text-2xl font-bold">SEO Dashboard</CardTitle>
-                <Select value={String(selectedSite?.id)} onValueChange={handleWebsiteChange}>
-                    {
-                        loading ?
-                            <p>Loading</p>
-                            :
-                            (
-                                <SelectTrigger className="w-[250px]">
-                                    <SelectValue placeholder="Select website" />
-                                </SelectTrigger>
-                            )
-                    }
-                    <SelectContent>
-                        {sites?.map((website) => (
-                            <SelectItem key={website.id} value={String(website.id)}>
-                                {website.url}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <Selector sites={sites || []} loading={loading} handleWebsiteChange={handleWebsiteChange} selectedSite={selectedSite} />
             </div>
             <CardDescription className="flex items-center mt-2">
                 <Globe className="w-4 h-4 mr-2" />

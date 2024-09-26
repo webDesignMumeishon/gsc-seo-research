@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import Connections from '@/components/Connections'
-import { GetSites, GetSitesGoogle } from '@/actions/google'
+import { GetSitesGoogle } from '@/actions/google'
 import NoKeywordsData from '@/components/NoKeywordsData'
 
 export default async function Page({ searchParams }: {

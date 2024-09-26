@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { GoogleAPISitesList } from "@/types/googleapi";
 
 class SiteService {
     public static async getUserSites(userId: number) {
@@ -8,6 +7,12 @@ class SiteService {
                 userId: userId
             }
         })
+    }
+
+    public static async removeSite(id: number) {
+        return prisma.site.delete({
+            where: { id }
+        });
     }
 }
 

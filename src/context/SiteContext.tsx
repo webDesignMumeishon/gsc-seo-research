@@ -1,5 +1,5 @@
 "use client"
-import { GetSites, GetSitesCache, Sites } from '@/actions/google';
+import { GetSitesCache, Sites } from '@/actions/google';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 
@@ -9,6 +9,7 @@ type SiteContextType = {
     setSelectedSite: (site: Sites) => void;
     loading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    removeSite: (siteId: number) => void
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
@@ -21,7 +22,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const fetchSites = async () => {
             const fetchedSites = await GetSitesCache(1);
-            console.log(fetchedSites)
             setSites(fetchedSites);
             if (fetchedSites && fetchedSites.length > 0) {
                 setSelectedSite(fetchedSites[0]);
@@ -31,8 +31,20 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fetchSites();
     }, []);
 
+    const removeSite = (siteId: number): void => {
+        const filteredSites = sites?.filter(site => site.id !== siteId)
+        if (filteredSites === undefined) {
+            setSites([])
+            setSelectedSite(null)
+        }
+        else {
+            setSites(filteredSites)
+            setSelectedSite(filteredSites[0])
+        }
+    }
+
     return (
-        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading, setLoading }}>
+        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading, setLoading, removeSite }}>
             {children}
         </SiteContext.Provider>
     );
