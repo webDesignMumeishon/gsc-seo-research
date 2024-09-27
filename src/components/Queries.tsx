@@ -393,7 +393,7 @@ const PageQueries = ({
                                         <TableCell>{query.keys[0]}</TableCell>
                                         <TableCell className="text-right">{query.impressions}</TableCell>
                                         <TableCell className="text-right">{query.clicks}</TableCell>
-                                        <TableCell className="text-right">{query.position}</TableCell>
+                                        <TableCell className="text-right">{Math.round(query.position)}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
