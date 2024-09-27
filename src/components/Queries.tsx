@@ -45,10 +45,10 @@ export enum SortDirection {
 
 // Define the fields you want to sort by
 export enum SortField {
-    Query = 'query',
-    Impressions = 'impressions',
-    Clicks = 'clicks',
-    Position = 'position',
+    Query = 'Query',
+    Impressions = 'Impressions',
+    Clicks = 'Clicks',
+    Position = 'Position',
 }
 
 // Define a type for the sorting state
