@@ -42,7 +42,7 @@ const ManageConnections = ({ userSites }: Props) => {
     }
 
     return (
-        <Card className="mt-6 w-full" style={{ border: 'red solid 2px' }}>
+        <Card className="mt-6 w-full">
             <div className='p-6 flex flex-column justify-between'>
                 <CardHeader className='p-0'>
                     <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>

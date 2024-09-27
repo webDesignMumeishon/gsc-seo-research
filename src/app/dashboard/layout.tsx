@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     if (token !== null) {
         return (
             <SiteProvider>
-                <div className="flex h-screen bg-gray-100">
+                <div className="flex min-h-screen bg-gray-100">
                     <Sidebar />
                     <div className='flex flex-col w-full'>
                         <div className='flex'>

@@ -2,12 +2,12 @@
 
 import { oauth2Client } from '@/lib/oauth2-client';
 import { google } from 'googleapis'
-import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 import { GetUserToken } from './token';
 import prisma from "@/lib/prisma";
 import SiteService from '@/services/sites';
 import { GetSites } from './sites';
-import { SITES_LIST_CACHE_TAG } from '@/utils';
+import { SITES_LIST_CACHE_TAG, USER_ID } from '@/utils';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -70,7 +70,7 @@ export const GetPagesListCache = unstable_cache(
 );
 
 export const GetQueriesByPage = async (siteUrl: string, pageUrl: string, startDate: Date, endDate: Date) => {
-    const token = await GetUserToken(3)
+    const token = await GetUserToken(USER_ID)
 
     oauth2Client.setCredentials({
         access_token: token?.access_token,

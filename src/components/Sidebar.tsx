@@ -18,7 +18,7 @@ const sidebarItems = [
 export default function Sidebar() {
     const [activeItem, setActiveItem] = useState('Dashboard')
     return (
-        <div className="flex h-screen flex-col border-r  dark:bg-gray-800/40">
+        <div className="flex min-h-screen flex-col border-r  dark:bg-gray-800/40">
             <div className="p-2">
                 <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
                     <Link href="/">
