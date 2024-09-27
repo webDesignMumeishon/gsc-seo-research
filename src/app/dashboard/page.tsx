@@ -65,7 +65,7 @@ const Page = () => {
 
 
     return (
-        <Card className="mt-6">
+        <Card>
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">
                     {selectedPage === null ? 'Pages and Queries Overview' : `Queries for ${pagesData.find(p => p.id === selectedPage)?.page}`}

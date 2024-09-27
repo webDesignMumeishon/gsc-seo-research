@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                         <div className='flex'>
                             <WebsiteSelector />
                         </div>
-                        <div className='p-6'>
+                        <div className='px-6'>
                             {children}
                         </div>
                     </div>
