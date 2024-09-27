@@ -27,7 +27,7 @@ const WebsiteSelector = () => {
     return (
         <CardHeader>
             <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold">SEO Dashboard</CardTitle>
+                <CardTitle className="text-2xl font-bold mr-2">SEO Dashboard</CardTitle>
                 <Selector sites={sites || []} loading={loading} handleWebsiteChange={handleWebsiteChange} selectedSite={selectedSite} />
             </div>
             <CardDescription className="flex items-center mt-2">
