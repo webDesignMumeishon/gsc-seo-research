@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import SiteService from '@/services/sites';
 import { GetSites } from './sites';
 import { SITES_LIST_CACHE_TAG, USER_ID } from '@/utils';
+import { Site } from '@/types/site';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -108,13 +109,7 @@ export const GetQueriesByPage = async (siteUrl: string, pageUrl: string, startDa
     return queries
 }
 
-export interface Sites {
-    id: number
-    url: string
-    permission: string
-}
-
-export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Sites[]> => {
+export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Site[]> => {
     try {
         oauth2Client.setCredentials({
             access_token: accessToken,
@@ -147,7 +142,7 @@ export const GetSitesGoogle = async (accessToken: string, refreshToken: string, 
     }
 }
 
-export const saveUserSites = async (accessToken: string, refreshToken: string, userId: number, sites: Sites[]) => {
+export const saveUserSites = async (accessToken: string, refreshToken: string, userId: number, sites: Site[]) => {
     oauth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken })
     const oauth2 = google.oauth2({
         auth: oauth2Client,

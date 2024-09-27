@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from '@/hooks/use-toast'
 import { ToastAction } from '@/components/ui/toast'
-import { saveUserSites, Sites } from '@/actions/google'
+import { saveUserSites } from '@/actions/google'
+import { Site } from '@/types/site'
 
 
 type Props = {
@@ -22,7 +23,7 @@ type Props = {
 }
 
 const Connections = ({ userWebsites, access_token, refresh_token, userId }: Props) => {
-    const [selectedWebsites, setSelectedWebsites] = useState<Sites[]>([])
+    const [selectedWebsites, setSelectedWebsites] = useState<Site[]>([])
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 

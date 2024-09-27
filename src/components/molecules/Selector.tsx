@@ -2,10 +2,10 @@
 import React from 'react'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sites } from '@/actions/google';
+import { Site } from '@/types/site';
 
 type Props = {
-  sites: Sites[]
+  sites: Site[]
   loading: boolean
   handleWebsiteChange: any
   selectedSite: any

@@ -9,20 +9,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { XCircle, AlertTriangle, CirclePlus } from 'lucide-react'
 import { USER_ID } from '@/utils'
 import { useRouter } from 'next/navigation'
-import { Sites } from '@/actions/google'
 import { DeleteSite } from '@/actions/sites'
 import { useSiteContext } from '@/context/SiteContext'
 import Alert from '../molecules/Alert'
+import { Site } from '@/types/site'
 
 
 type Props = {
-    userSites: Sites[]
+    userSites: Site[]
 }
 
 const ManageConnections = ({ userSites }: Props) => {
     const { removeSite } = useSiteContext();
 
-    const [properties, setProperties] = useState<Sites[]>(userSites)
+    const [properties, setProperties] = useState<Site[]>(userSites)
     const router = useRouter()
 
 

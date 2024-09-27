@@ -1,9 +1,9 @@
 'use server'
 
 import SiteService from "@/services/sites";
-import { Sites } from "./google";
 import { revalidateTag } from "next/cache";
 import { SITES_LIST_CACHE_TAG } from "@/utils";
+import { Site } from "@/types/site";
 
 export const DeleteSite = async (siteId: number): Promise<number> => {
     const site = await SiteService.removeSite(siteId)
@@ -11,7 +11,7 @@ export const DeleteSite = async (siteId: number): Promise<number> => {
     return site.id
 }
 
-export const GetSites = async (userId: number): Promise<Sites[]> => {
+export const GetSites = async (userId: number): Promise<Site[]> => {
     try {
         const sites = await SiteService.getUserSites(userId)
 

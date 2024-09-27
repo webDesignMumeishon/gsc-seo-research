@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react'
-import { googleTrendsTest } from '@/actions/googleTrends'
-import { Sites } from '@/actions/google'
 
 type Props = {
     pagesData: any[]

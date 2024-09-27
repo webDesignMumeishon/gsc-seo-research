@@ -1,12 +1,13 @@
 "use client"
-import { GetSitesCache, Sites } from '@/actions/google';
+import { GetSitesCache } from '@/actions/google';
+import { Site } from '@/types/site';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 
 type SiteContextType = {
-    sites: Sites[] | null;
-    selectedSite: Sites | null;
-    setSelectedSite: (site: Sites) => void;
+    sites: Site[] | null;
+    selectedSite: Site | null;
+    setSelectedSite: (site: Site) => void;
     loading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     removeSite: (siteId: number) => void
@@ -15,9 +16,9 @@ type SiteContextType = {
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [sites, setSites] = useState<Sites[] | null>(null);
+    const [sites, setSites] = useState<Site[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [selectedSite, setSelectedSite] = useState<Sites | null>(null);
+    const [selectedSite, setSelectedSite] = useState<Site | null>(null);
 
     useEffect(() => {
         const fetchSites = async () => {
