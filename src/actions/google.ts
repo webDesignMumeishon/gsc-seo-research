@@ -9,13 +9,14 @@ import SiteService from '@/services/sites';
 import { GetSites } from './sites';
 import { SITES_LIST_CACHE_TAG, USER_ID } from '@/utils';
 import { Site } from '@/types/site';
+import GoogleSearchConsoleService from '@/services/google-search-console';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
 
 
-export const GetPagesList = async (page: string, userId: number) => {
+export const   GetPagesList = async (page: string, userId: number) => {
     const token = await GetUserToken(userId)
 
     oauth2Client.setCredentials({
@@ -70,43 +71,12 @@ export const GetPagesListCache = unstable_cache(
     { revalidate: 86400 } // 86400 seconds = 1 day
 );
 
-export const GetQueriesByPage = async (siteUrl: string, pageUrl: string, startDate: Date, endDate: Date) => {
+export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
     const token = await GetUserToken(USER_ID)
 
-    oauth2Client.setCredentials({
-        access_token: token?.access_token,
-        refresh_token: token?.refresh_token
-    })
+    const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
 
-    const webmasters = google.webmasters({
-        version: 'v3',
-        auth: oauth2Client,
-    });
-
-    const response = await webmasters.searchanalytics.query({
-        siteUrl,
-        requestBody: {
-            startDate,
-            endDate,
-            dimensions: ['query', 'page'],
-            dimensionFilterGroups: [
-                {
-                    filters: [
-                        {
-                            dimension: 'page',
-                            operator: 'equals',
-                            expression: pageUrl, // The page URL you want to filter on
-                        },
-                    ],
-                },
-            ],
-            rowLimit: 5000, // Adjust as needed
-        },
-    });
-
-    const queries = response.data.rows || [];
-
-    return queries
+    return await console.getQueriesByPage(url, pageUrl, startDate, endDate)
 }
 
 export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Site[]> => {

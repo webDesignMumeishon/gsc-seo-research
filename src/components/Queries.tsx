@@ -26,7 +26,7 @@ type Props = {
     handleBackClick: any
 }
 
-interface query {
+export interface query {
     clicks: number;
     ctr: number;
     impressions: number;
