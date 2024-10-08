@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { XCircle, AlertTriangle, CirclePlus } from 'lucide-react'
-import { USER_ID } from '@/utils'
 import { useRouter } from 'next/navigation'
 import { DeleteSite } from '@/app/actions/sites'
 import { useSiteContext } from '@/context/SiteContext'

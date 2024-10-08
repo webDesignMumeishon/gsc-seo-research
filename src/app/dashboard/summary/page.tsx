@@ -21,22 +21,22 @@ type QueryData = {
 }
 
 // Mock data
-const overallData: DataPoint[] = [
-    { month: 'Jan 2023', impressions: 10000, clicks: 500 },
-    { month: 'Feb 2023', impressions: 12000, clicks: 600 },
-    { month: 'Mar 2023', impressions: 15000, clicks: 750 },
-    { month: 'Apr 2023', impressions: 13000, clicks: 650 },
-    { month: 'May 2023', impressions: 16000, clicks: 800 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-    { month: 'Jun 2023', impressions: 18000, clicks: 900 },
-]
+// const overallData: DataPoint[] = [
+//     { month: 'Jan 2023', impressions: 10000, clicks: 500 },
+//     { month: 'Feb 2023', impressions: 12000, clicks: 600 },
+//     { month: 'Mar 2023', impressions: 15000, clicks: 750 },
+//     { month: 'Apr 2023', impressions: 13000, clicks: 650 },
+//     { month: 'May 2023', impressions: 16000, clicks: 800 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+//     { month: 'Jun 2023', impressions: 18000, clicks: 900 },
+// ]
 
 const queryData: QueryData = {
     'roofing services': [
@@ -66,14 +66,14 @@ const queryData: QueryData = {
 }
 
 export default function MonthlySummary() {
-    const { sites, selectedSite, loading } = useSiteContext();
+    const { selectedSite, userIdClerk } = useSiteContext();
     const [selectedQuery, setSelectedQuery] = useState<string>('overall')
     const [overallData, setOverallData] = useState<DataPoint[]>([])
 
     useEffect(() => {
         const fetchData = async () => {
-            if (selectedSite?.name !== undefined) {
-                const queries = await GetQueries(3, selectedSite?.name)
+            if (selectedSite?.url !== undefined) {
+                const queries = await GetQueries(userIdClerk, selectedSite?.url)
                 setOverallData(queries)
             }
         }

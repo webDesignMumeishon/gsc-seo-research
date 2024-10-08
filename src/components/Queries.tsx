@@ -100,12 +100,12 @@ const PageQueries = ({
         const fetchData = async () => {
             setLoading(true)
             if (customDateRange?.from !== undefined && customDateRange?.to !== undefined) {
-                const result = await GetQueriesByPage(site, pageUrl, moment(customDateRange?.from).format('YYYY-MM-DD'), moment(customDateRange?.to).format('YYYY-MM-DD'))
+                const result = await GetQueriesByPage(site, pageUrl, moment(customDateRange?.from).format('YYYY-MM-DD') as any, moment(customDateRange?.to).format('YYYY-MM-DD') as any)
                 setQueriesData(result)
             }
             else {
                 const { from, to } = DateService.getDaysRange(convertDateIntoNumber(dateRange))
-                const result = await GetQueriesByPage(site, pageUrl, from, to)
+                const result = await GetQueriesByPage(site, pageUrl, from as any, to as any)
                 setQueriesData(result)
             }
             setLoading(false)
@@ -250,8 +250,7 @@ const PageQueries = ({
                         <Calendar
                             mode="range"
                             selected={customDateRange}
-                            onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined, selectedDay) => {
-                                console.log(range)
+                            onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined) => {
                                 if (range !== undefined) {
                                     if (range.from !== undefined && range.to === undefined) {
                                         setCustomDateRange({ from: range.from, to: undefined });

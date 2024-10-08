@@ -1,7 +1,7 @@
 'use server'
 
 import { google } from 'googleapis'
-import { revalidateTag, unstable_cache } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { auth } from '@clerk/nextjs/server'
 
 import { oauth2Client } from '@/lib/oauth2-client';
@@ -16,13 +16,7 @@ const endDate = '2024-09-13';
 const rowLimit = 5000;
 
 
-export const GetPagesList = async (page: string) => {
-    const { userId } = auth()
-
-    if (userId === null) {
-        throw new Error('Missing userId')
-    }
-
+export const PagesQueryCount = async (userId: string, page: string) => {
     const token = await GetUserToken(userId)
 
     oauth2Client.setCredentials({
@@ -68,14 +62,6 @@ export const GetPagesList = async (page: string) => {
 
     return result
 }
-
-export const GetPagesListCache = unstable_cache(
-    async (page: string) => {
-        return await GetPagesList(page);
-    },
-    ['pages-list'],
-    { revalidate: 1 } // 86400 seconds = 1 day
-);
 
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
     const { userId } = auth()
@@ -147,7 +133,7 @@ export const saveUserSites = async (accessToken: string, refreshToken: string, u
 
 }
 
-export const GetQueries = async (userId: number, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
+export const GetQueries = async (userId: string, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
     const token = await GetUserToken(userId)
 
     oauth2Client.setCredentials({
@@ -186,12 +172,12 @@ export const GetQueries = async (userId: number, siteUrl: string): Promise<{ mon
 
             const month = date?.slice(0, 7); // Extract 'YYYY-MM' from 'YYYY-MM-DD'
 
-            if (!acc[month]) {
-                acc[month] = { impressions: 0, clicks: 0 };
+            if (!acc[month as string]) {
+                acc[month as string] = { impressions: 0, clicks: 0 };
             }
 
-            acc[month].impressions += impressions;
-            acc[month].clicks += clicks;
+            acc[month as string].impressions += impressions;
+            acc[month as string].clicks += clicks;
 
             return acc;
         }, {});

@@ -43,7 +43,7 @@ class GoogleSearchConsoleService {
                 ],
                 rowLimit: 5000,
             },
-        });
+        } as any );
 
         const queries = response.data.rows || [];
         return queries

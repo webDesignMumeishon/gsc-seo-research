@@ -37,7 +37,7 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
     const handleSubmit = async () => {
         try {
             setLoading(true)
-            const sitesCreated = await saveUserSites(access_token, refresh_token, userId, selectedWebsites)
+            await saveUserSites(access_token, refresh_token, userId, selectedWebsites)
             toast({
                 title: "Scheduled: Catch up ",
                 description: "Friday, February 10, 2023 at 5:57 PM",

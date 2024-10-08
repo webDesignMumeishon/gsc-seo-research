@@ -3,17 +3,18 @@ import React, { useEffect, useState } from 'react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { GetPagesList } from '@/app/actions/google'
+import { PagesQueryCount } from '@/app/actions/google'
 import { useSiteContext } from '@/context/SiteContext'
 import NoKeywordsData from '@/components/NoKeywordsData'
 import { PageQuery } from '@/types'
 import ListPages from '@/components/ListPages'
 import PageQueries from '@/components/Queries'
+import { cachedGetPagesList } from '../actions/cached'
 
 
 const Page = () => {
     const [selectedPage, setSelectedPage] = useState<number | null>(null)
-    const { selectedSite } = useSiteContext();
+    const { selectedSite, userIdClerk } = useSiteContext();
     const [pagesData, setpagesData] = useState<PageQuery[]>([])
 
     const [localLoading, setLocalLoading] = useState(true)
@@ -22,7 +23,7 @@ const Page = () => {
     useEffect(() => {
         const fetch = async (page: string) => {
             setLocalLoading(true)
-            const result = await GetPagesList(page);
+            const result = await cachedGetPagesList(userIdClerk, page);
             setpagesData(result)
             setLocalLoading(false)
         }
