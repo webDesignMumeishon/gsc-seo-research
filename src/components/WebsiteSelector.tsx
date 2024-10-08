@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react'
 import { Globe } from 'lucide-react';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSiteContext } from '@/context/SiteContext';
 import Selector from './molecules/Selector';

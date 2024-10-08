@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, Search, ArrowDown, ArrowUp, XIcon } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, XIcon } from 'lucide-react'
 import { webmasters_v3 } from 'googleapis'
 import moment from 'moment'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"

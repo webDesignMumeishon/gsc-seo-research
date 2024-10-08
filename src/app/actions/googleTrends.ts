@@ -1,9 +1,9 @@
 'use server'
-// @ts-ignore
+// @ts-expect-error
 import googleTrends from 'google-trends-api'
-export const googleTrendsTest = (keyword: string) => {
+export const googleTrendsTest = () => {
 
-    let query = {
+    const query = {
         keyword: 'spokane roofing',
         geo: 'US',  // Use US-WA to limit the search to Washington state
     };

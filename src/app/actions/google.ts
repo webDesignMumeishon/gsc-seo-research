@@ -179,7 +179,7 @@ export const GetQueries = async (userId: number, siteUrl: string): Promise<{ mon
 
         // Group by month
         const monthlyData = rows.reduce((acc: any, row) => {
-            const query = row?.keys?.[0]; // The search query
+            // const query = row?.keys?.[0]; // The search query
             const date = row?.keys?.[1]; // The date
             const impressions = row.impressions;
             const clicks = row.clicks;

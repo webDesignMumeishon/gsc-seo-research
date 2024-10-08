@@ -1,10 +1,9 @@
 "use client"
-import { webmasters_v3 } from 'googleapis'
 import React, { useEffect, useState } from 'react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { GetPagesList, GetPagesListCache } from '@/app/actions/google'
+import { GetPagesList } from '@/app/actions/google'
 import { useSiteContext } from '@/context/SiteContext'
 import NoKeywordsData from '@/components/NoKeywordsData'
 import { PageQuery } from '@/types'
@@ -37,7 +36,7 @@ const Page = () => {
         }
     }, [selectedSite])
 
-    const handlePageClick = async (pageId: number, pageUrl: string) => {
+    const handlePageClick = async (pageId: number) => {
         if (selectedSite?.url !== undefined) {
             setSelectedPage(pageId)
         }
