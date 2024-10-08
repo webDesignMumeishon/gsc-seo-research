@@ -2,8 +2,8 @@
 import { useAuth } from '@clerk/nextjs';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-import { cachedGetSites } from '@/app/actions/sites';
 import { Site } from '@/types/site';
+import { cachedGetSites } from '@/app/actions/cached';
 
 
 type SiteContextType = {

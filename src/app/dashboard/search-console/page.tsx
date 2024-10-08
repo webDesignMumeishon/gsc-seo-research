@@ -1,8 +1,8 @@
 
 import React from 'react'
 import ManageConnections from '@/components/organisms/ManageConnections'
-import { cachedGetSites } from '@/app/actions/sites'
 import { auth } from '@clerk/nextjs/server'
+import { cachedGetSites } from '@/app/actions/cached'
 
 
 
