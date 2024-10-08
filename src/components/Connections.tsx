@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Globe, CheckCircle, Check } from 'lucide-react'
+import { Globe, CheckCircle, Check, AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -66,24 +66,37 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ScrollArea className="h-[400px] w-full rounded-md border p-4">
-                        {userWebsites.map((website) => (
-                            <div key={website.id} className="flex items-center space-x-2 mb-4">
-                                <Checkbox
-                                    id={`website-${website.id}`}
-                                    checked={!!selectedWebsites.find((site) => site.id === website.id)}
-                                    onCheckedChange={() => handleWebsiteToggle(website.id)}
-                                />
-                                <label
-                                    htmlFor={`website-${website.id}`}
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
-                                >
-                                    <span className="mr-2">{website.icon}</span>
-                                    {website.url}
-                                </label>
-                            </div>
-                        ))}
-                    </ScrollArea>
+                    <div className="h-[400px]">
+                        {
+                            userWebsites.length === 0 ?
+                                <div className="border rounded-lg p-6 flex flex-col items-center justify-center space-y-2 h-full">
+                                    <AlertCircle className="h-10 w-10 text-muted-foreground" />
+                                    <p className="text-lg font-medium text-center">No websites available</p>
+                                    <p className="text-sm text-muted-foreground text-center">
+                                        This account does not have any sites connected. Please add a website to get started.
+                                    </p>
+                                </div>
+                                :
+                                <ScrollArea className="w-full rounded-md border p-4">
+                                    {userWebsites.map((website) => (
+                                        <div key={website.id} className="flex items-center space-x-2 mb-4">
+                                            <Checkbox
+                                                id={`website-${website.id}`}
+                                                checked={!!selectedWebsites.find((site) => site.id === website.id)}
+                                                onCheckedChange={() => handleWebsiteToggle(website.id)}
+                                            />
+                                            <label
+                                                htmlFor={`website-${website.id}`}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
+                                            >
+                                                <span className="mr-2">{website.icon}</span>
+                                                {website.url}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </ScrollArea>
+                        }
+                    </div>
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">

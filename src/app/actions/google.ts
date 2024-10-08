@@ -138,6 +138,7 @@ export const saveUserSites = async (accessToken: string, refreshToken: string, u
         const sitesCreated = await SiteService.saveSites(userId, userInfo.data.id || '', accessToken, refreshToken, sites)
 
         revalidateTag(SITES_LIST_CACHE_TAG)
+
         return sitesCreated
     } catch (error) {
         console.log(error)
