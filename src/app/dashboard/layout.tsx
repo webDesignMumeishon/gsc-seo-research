@@ -1,6 +1,7 @@
 import React from 'react'
 import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server'
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 import Sidebar from '@/components/Sidebar';
 import WebsiteSelector from '@/components/WebsiteSelector';
@@ -15,6 +16,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     return (
         <SiteProvider>
+            <div className='p-4 absolute right-0'>
+                <SignedOut>
+                    <SignInButton />
+                </SignedOut>
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
+            </div>
             <div className="flex min-h-screen bg-gray-100">
                 <Sidebar />
                 <div className='flex flex-col w-full'>
