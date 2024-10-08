@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { XCircle, AlertTriangle, CirclePlus } from 'lucide-react'
 import { USER_ID } from '@/utils'
 import { useRouter } from 'next/navigation'
-import { DeleteSite } from '@/actions/sites'
+import { DeleteSite } from '@/app/actions/sites'
 import { useSiteContext } from '@/context/SiteContext'
 import Alert from '../molecules/Alert'
 import { Site } from '@/types/site'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 const ManageConnections = ({ userSites }: Props) => {
-    const { removeSite } = useSiteContext();
+    const { removeSite, userIdClerk } = useSiteContext();
 
     const [properties, setProperties] = useState<Site[]>(userSites)
     const router = useRouter()
@@ -37,7 +37,7 @@ const ManageConnections = ({ userSites }: Props) => {
     }
 
     const redirectToUrl = async () => {
-        const url = await axios.get(`/api/auth?userId=${USER_ID}`)
+        const url = await axios.get(`/api/auth?userId=${userIdClerk}`)
         router.push(url.data)
     }
 

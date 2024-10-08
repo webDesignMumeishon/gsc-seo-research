@@ -13,8 +13,7 @@ model Token {
     access_token  String
     refresh_token String
     accountId     String
-    user          User   @relation(fields: [userId], references: [id])
-    userId        Int
+    userId        String
     Site          Site[]
 
     // Add a unique constraint for userId and accountId
@@ -26,9 +25,8 @@ model Site {
     id         Int    @id @default(autoincrement())
     url        String
     permission String
-    userId     Int
+    userId     String
     tokenId    Int
-    user       User   @relation(fields: [userId], references: [id])
     token      Token  @relation(fields: [tokenId], references: [id])
 
     // Add a unique constraint for url and userId. This means a user can't have the same site more than once
@@ -42,8 +40,6 @@ model User {
     email     String?  @unique
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
-    token     Token[]
-    Site      Site[]
 
     @@map(name: "users")
 }

@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import Sidebar from '@/components/Sidebar';
-import { GetUserToken } from '@/actions/token';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react'
 import WebsiteSelector from '@/components/WebsiteSelector';
 import { SiteProvider } from '@/context/SiteContext';
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {
-    const token = await GetUserToken(1);
+    const user = await currentUser()
 
-    if (token !== null) {
+    if (user !== null) {
         return (
             <SiteProvider>
                 <div className="flex min-h-screen bg-gray-100">

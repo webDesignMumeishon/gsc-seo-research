@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from '@/hooks/use-toast'
 import { ToastAction } from '@/components/ui/toast'
-import { saveUserSites } from '@/actions/google'
+import { saveUserSites } from '@/app/actions/google'
 import { Site } from '@/types/site'
 
 
@@ -37,7 +37,7 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
     const handleSubmit = async () => {
         try {
             setLoading(true)
-            const sitesCreated = await saveUserSites(access_token, refresh_token, Number(userId), selectedWebsites)
+            const sitesCreated = await saveUserSites(access_token, refresh_token, userId, selectedWebsites)
             toast({
                 title: "Scheduled: Catch up ",
                 description: "Friday, February 10, 2023 at 5:57 PM",

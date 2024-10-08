@@ -14,7 +14,7 @@ import { ScrollArea } from './ui/scroll-area'
 import { QueryLengthFilter } from '@/enums/filters'
 import MetricSorting from '@/components/atoms/MetricSorting'
 import { Calendar } from "@/components/ui/calendar"
-import { GetQueriesByPage } from '@/actions/google'
+import { GetQueriesByPage } from '@/app/actions/google'
 import EmptyQueries from './EmptyQueries'
 
 const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i

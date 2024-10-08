@@ -1,13 +1,13 @@
 'use server'
 
-import { oauth2Client } from '@/lib/oauth2-client';
 import { google } from 'googleapis'
 import { revalidateTag, unstable_cache } from 'next/cache';
+import { auth } from '@clerk/nextjs/server'
+
+import { oauth2Client } from '@/lib/oauth2-client';
 import { GetUserToken } from './token';
-import prisma from "@/lib/prisma";
 import SiteService from '@/services/sites';
-import { GetSites } from './sites';
-import { SITES_LIST_CACHE_TAG, USER_ID } from '@/utils';
+import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
 
@@ -16,7 +16,13 @@ const endDate = '2024-09-13';
 const rowLimit = 5000;
 
 
-export const   GetPagesList = async (page: string, userId: number) => {
+export const GetPagesList = async (page: string) => {
+    const { userId } = auth()
+
+    if (userId === null) {
+        throw new Error('Missing userId')
+    }
+
     const token = await GetUserToken(userId)
 
     oauth2Client.setCredentials({
@@ -64,22 +70,28 @@ export const   GetPagesList = async (page: string, userId: number) => {
 }
 
 export const GetPagesListCache = unstable_cache(
-    async (page: string, userId: number) => {
-        return await GetPagesList(page, userId);
+    async (page: string) => {
+        return await GetPagesList(page);
     },
     ['pages-list'],
-    { revalidate: 86400 } // 86400 seconds = 1 day
+    { revalidate: 1 } // 86400 seconds = 1 day
 );
 
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
-    const token = await GetUserToken(USER_ID)
+    const { userId } = auth()
+
+    if (userId === null) {
+        throw new Error('Missing userId')
+    }
+
+    const token = await GetUserToken(userId)
 
     const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
 
     return await console.getQueriesByPage(url, pageUrl, startDate, endDate)
 }
 
-export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: number): Promise<Site[]> => {
+export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: string): Promise<Site[]> => {
     try {
         oauth2Client.setCredentials({
             access_token: accessToken,
@@ -112,8 +124,9 @@ export const GetSitesGoogle = async (accessToken: string, refreshToken: string, 
     }
 }
 
-export const saveUserSites = async (accessToken: string, refreshToken: string, userId: number, sites: Site[]) => {
+export const saveUserSites = async (accessToken: string, refreshToken: string, userId: string, sites: Site[]) => {
     oauth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken })
+
     const oauth2 = google.oauth2({
         auth: oauth2Client,
         version: 'v2',
@@ -122,37 +135,8 @@ export const saveUserSites = async (accessToken: string, refreshToken: string, u
     try {
         const userInfo = await oauth2.userinfo.get();
 
-        const token = await prisma.token.upsert({
-            where: {
-                userId_accountId: {
-                    userId: userId,
-                    accountId: userInfo.data.id || ''
-                },
-            },
-            update: {}, // No update needed
-            create: {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                userId: userId,
-                accountId: userInfo.data.id || ''
-            }
-        });
+        const sitesCreated = await SiteService.saveSites(userId, userInfo.data.id || '', accessToken, refreshToken, sites)
 
-        const sitesCreated = await Promise.all(sites.map(async site => {
-            return prisma.site.create({
-                data: {
-                    url: site.url,
-                    permission: site.permission,
-                    userId: userId,
-                    tokenId: token.id
-                },
-                select: {
-                    id: true,
-                    url: true,
-                    permission: true,
-                },
-            })
-        }))
         revalidateTag(SITES_LIST_CACHE_TAG)
         return sitesCreated
     } catch (error) {
@@ -161,14 +145,6 @@ export const saveUserSites = async (accessToken: string, refreshToken: string, u
 
 
 }
-
-export const GetSitesCache = unstable_cache(
-    async (userId: number) => {
-        return await GetSites(userId);
-    },
-    ['sites-list'],
-    { tags: [SITES_LIST_CACHE_TAG], revalidate: 86400 } // 86400 seconds = 1 day
-);
 
 export const GetQueries = async (userId: number, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
     const token = await GetUserToken(userId)

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import Connections from '@/components/Connections'
-import { GetSitesGoogle } from '@/actions/google'
+import { GetSitesGoogle } from '@/app/actions/google'
 import NoKeywordsData from '@/components/NoKeywordsData'
 
 export default async function Page({ searchParams }: {
@@ -12,7 +12,7 @@ export default async function Page({ searchParams }: {
         return redirect('/')
     }
 
-    const sites = await GetSitesGoogle(searchParams.access_token as string, searchParams.refresh_token as string, Number(searchParams.userId as string))
+    const sites = await GetSitesGoogle(searchParams.access_token as string, searchParams.refresh_token as string, searchParams.userId as string)
 
     if (sites === undefined) {
         return <NoKeywordsData />

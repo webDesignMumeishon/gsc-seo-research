@@ -1,7 +1,7 @@
 "use server"
-import prisma from "../lib/prisma"
+import prisma from "../../lib/prisma"
 
-export async function GetUserToken(userId: number) {
+export async function GetUserToken(userId: string) {
     const token = await prisma.token.findFirst({
         where: {
             userId

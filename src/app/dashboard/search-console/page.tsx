@@ -1,13 +1,20 @@
 
 import React from 'react'
-import { USER_ID } from '@/utils'
-import { GetSitesCache } from '@/actions/google'
 import ManageConnections from '@/components/organisms/ManageConnections'
+import { cachedGetSites } from '@/app/actions/sites'
+import { auth } from '@clerk/nextjs/server'
 
 
 
 export default async function Page() {
-    const sites = await GetSitesCache(USER_ID)
+
+    const { userId } = auth()
+
+    if (userId === null) {
+        throw new Error("missing userid")
+    }
+
+    const sites = await cachedGetSites(userId)
 
     return (
         <ManageConnections userSites={sites} />

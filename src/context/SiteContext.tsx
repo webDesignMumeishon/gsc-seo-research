@@ -1,7 +1,9 @@
 "use client"
-import { GetSitesCache } from '@/actions/google';
-import { Site } from '@/types/site';
+import { useAuth } from '@clerk/nextjs';
 import React, { createContext, useState, useContext, useEffect } from 'react';
+
+import { cachedGetSites } from '@/app/actions/sites';
+import { Site } from '@/types/site';
 
 
 type SiteContextType = {
@@ -11,18 +13,27 @@ type SiteContextType = {
     loading: boolean
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
     removeSite: (siteId: number) => void
+    userIdClerk: string
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { userId, } = useAuth()
+
+    const userIdClerk = userId as string
+
+    if (userId !== null && userId !== undefined) {
+        userId as string
+    }
+
     const [sites, setSites] = useState<Site[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedSite, setSelectedSite] = useState<Site | null>(null);
 
     useEffect(() => {
         const fetchSites = async () => {
-            const fetchedSites = await GetSitesCache(1);
+            const fetchedSites = await cachedGetSites(userIdClerk);
             setSites(fetchedSites);
             if (fetchedSites && fetchedSites.length > 0) {
                 setSelectedSite(fetchedSites[0]);
@@ -45,7 +56,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     return (
-        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading, setLoading, removeSite }}>
+        <SiteContext.Provider value={{ sites, selectedSite, setSelectedSite, loading, setLoading, removeSite, userIdClerk }}>
             {children}
         </SiteContext.Provider>
     );
