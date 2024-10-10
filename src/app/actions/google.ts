@@ -1,6 +1,6 @@
 'use server'
 
-import { google } from 'googleapis'
+import { google, webmasters_v3 } from 'googleapis'
 import { revalidateTag } from 'next/cache';
 import { auth } from '@clerk/nextjs/server'
 
@@ -10,6 +10,7 @@ import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
+import { SiteMetrics, GoogleDataRow } from '@/types/googleapi';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -61,6 +62,58 @@ export const PagesQueryCount = async (userId: string, page: string) => {
     }));
 
     return result
+}
+
+export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<SiteMetrics[]> => {
+    const token = await GetUserToken(userId)
+
+    oauth2Client.setCredentials({
+        access_token: token?.access_token,
+        refresh_token: token?.refresh_token
+    })
+
+    const webmasters = google.webmasters({
+        version: 'v3',
+        auth: oauth2Client,
+    });
+
+    const response = await webmasters.searchanalytics.query({
+        siteUrl,
+        requestBody: {
+            startDate,
+            endDate,
+            dimensions: ['date'],
+            rowLimit,
+            dimensionFilterGroups: [],
+        },
+    });
+
+    const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc, curr) => {
+        const dayKey = curr?.keys?.[0] as string
+        const clicks = curr.clicks || 0
+        const ctr = curr.ctr || 0
+        const impressions = curr.impressions || 0
+        const position = curr.position || 0
+
+        if (!acc[dayKey]) {
+            acc[dayKey] = {
+                clicks,
+                ctr,
+                impressions,
+                position,
+            }
+        }
+
+        return acc
+    }, {})
+
+    if (result === undefined) {
+        return []
+    }
+    else {
+        return Object.keys(result).map(row => ({ date: row, ...result[row] }))
+    }
+
 }
 
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {

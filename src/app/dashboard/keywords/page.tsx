@@ -1,119 +1,98 @@
 "use client"
+import React, { useEffect, useState } from 'react'
 
-import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { XCircle, AlertTriangle } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { PagesQueryCount } from '@/app/actions/google'
+import { useSiteContext } from '@/context/SiteContext'
+import NoKeywordsData from '@/components/NoKeywordsData'
+import { PageQuery } from '@/types'
+import ListPages from '@/components/ListPages'
+import PageQueries from '@/components/Queries'
+import { cachedGetPagesList } from '../../actions/cached'
 
-type Property = {
-    id: string;
-    url: string;
-    lastSync: string;
-}
 
-export default function Page() {
-    const [properties, setProperties] = useState<Property[]>([
-        { id: '1', url: 'https://www.example.com', lastSync: '2 hours ago' },
-        { id: '2', url: 'https://blog.example.com', lastSync: '1 day ago' },
-        { id: '3', url: 'https://shop.example.com', lastSync: '3 days ago' },
-    ])
+const Page = () => {
+    const [selectedPage, setSelectedPage] = useState<number | null>(null)
+    const { selectedSite, userIdClerk } = useSiteContext();
+    const [pagesData, setpagesData] = useState<PageQuery[]>([])
 
-    const disconnectProperty = (id: string) => {
-        // In a real application, this would be an API call to disconnect
-        setProperties(properties.filter(property => property.id !== id))
+    const [localLoading, setLocalLoading] = useState(true)
+
+
+    useEffect(() => {
+        const fetch = async (page: string) => {
+            setLocalLoading(true)
+            const result = await cachedGetPagesList(userIdClerk, page);
+            setpagesData(result)
+            setLocalLoading(false)
+        }
+
+        if (selectedSite !== null && selectedSite !== undefined) {
+            setSelectedPage(null)
+            fetch(selectedSite.url)
+        }
+        else {
+            setLocalLoading(false)
+        }
+    }, [selectedSite])
+
+    const handlePageClick = async (pageId: number) => {
+        if (selectedSite?.url !== undefined) {
+            setSelectedPage(pageId)
+        }
+        else {
+            throw new Error('Site does not exist')
+        }
     }
 
-    const disconnectAll = () => {
-        // In a real application, this would be an API call to disconnect all
-        setProperties([])
+    const handleBackClick = () => {
+        setSelectedPage(null)
     }
+
+
+    if (localLoading) {
+        return <h1>LoadingOk</h1>
+    }
+
+    if (localLoading === false && selectedSite === null) {
+        return <h1>No Site Available</h1>
+    }
+
+    if (pagesData.length === 0) {
+        return <NoKeywordsData />
+    }
+
 
     return (
-        <Card className="mt-6 w-full">
+        <Card>
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">Google Search Console Connections</CardTitle>
-                <CardDescription>Manage your connected Google Search Console properties</CardDescription>
+                <CardTitle className="text-2xl font-bold">
+                    {selectedPage === null ? 'Pages and Queries Overview' : `Queries for ${pagesData.find(p => p.id === selectedPage)?.page}`}
+                </CardTitle>
+                <CardDescription>
+                    {selectedPage === null ? 'Click on a page to view its queries' : 'Detailed query information for the selected page'}
+                </CardDescription>
             </CardHeader>
             <CardContent>
-                {properties.length > 0 ? (
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Property URL</TableHead>
-                                <TableHead>Last Sync</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {properties.map((property) => (
-                                <TableRow key={property.id}>
-                                    <TableCell>{property.url}</TableCell>
-                                    <TableCell>{property.lastSync}</TableCell>
-                                    <TableCell className="text-right">
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="destructive" size="sm">
-                                                    <XCircle className="w-4 h-4 mr-2" />
-                                                    Disconnect
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This will disconnect {property.url} from your SEO dashboard. You can always reconnect later.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => disconnectProperty(property.id)}>
-                                                        Disconnect
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                ) : (
-                    <div className="text-center py-8">
-                        <p className="text-gray-500">No connected properties</p>
-                    </div>
-                )}
+                {selectedPage !== null ? (
+                    <PageQueries
+                        site={selectedSite?.url || ''}
+                        pageUrl={pagesData.find(p => p.id === selectedPage)?.page || ''}
+                        handleBackClick={handleBackClick}
+                    />
+                )
+                    :
+                    <ScrollArea className="h-[600px] w-full">
+                        {selectedPage === null && (
+                            <ListPages pagesData={pagesData} handlePageClick={handlePageClick} />
+                        )}
+                    </ScrollArea>
+                }
+
             </CardContent>
-            <CardFooter className="flex justify-between">
-                <p className="text-sm text-gray-500">
-                    {properties.length} {properties.length === 1 ? 'property' : 'properties'} connected
-                </p>
-                {properties.length > 0 && (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive">
-                                <AlertTriangle className="w-4 h-4 mr-2" />
-                                Disconnect All
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This will disconnect all your Google Search Console properties from your SEO dashboard. This action cannot be undone.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={disconnectAll}>
-                                    Yes, disconnect all
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                )}
-            </CardFooter>
         </Card>
     )
 }
+
+export default Page

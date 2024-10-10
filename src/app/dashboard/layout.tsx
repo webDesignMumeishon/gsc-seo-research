@@ -25,11 +25,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 </SignedIn>
             </div>
             <div className="flex min-h-screen bg-gray-100">
-                <Sidebar />
+                {/* <Sidebar /> */}
                 <div className='flex flex-col w-full'>
-                    <div className='flex'>
+                    {/* <div className='flex'>
                         <WebsiteSelector />
-                    </div>
+                    </div> */}
                     <div className='px-6'>
                         {children}
                     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ArrowLeft, ChevronDown, ChevronUp, HelpCircle, RotateCcw, XIcon } from 'lucide-react'
 import { webmasters_v3 } from 'googleapis'
 import moment from 'moment'
+import { LineChart, Line, ResponsiveContainer } from 'recharts'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -57,6 +58,14 @@ type SortState = {
     field: SortField;
     direction: SortDirection;
 };
+
+const trendsData = [
+    { id: 1, term: "borja", searchVolume: "10K+", volumeIncrease: "+ 1,000%", started: "4 hours ago", status: "Active", relatedTerms: ["miguel borja", "borja river", "borja denunciado"], trendData: [0,0,0,0,0,0,0,0,0,0,0,1,2,5,10,20,50,100,80,60] },
+    { id: 2, term: "dia del profesor de educacion fisica", searchVolume: "10K+", volumeIncrease: "+ 1,000%", started: "13 hours ago", status: "Active", relatedTerms: ["dia del profesor de educacion fisica en argentina"], trendData: [0,0,0,0,10,20,30,40,50,60,70,80,90,100,90,80,70,60,50,40] },
+    { id: 3, term: "omar palma", searchVolume: "20K+", volumeIncrease: "+ 1,000%", started: "13 hours ago", status: "Active", relatedTerms: ["negro palma", "palma omar", "palma"], trendData: [0,0,0,0,0,0,0,10,20,50,100,90,80,70,60,50,40,30,20,10] },
+    { id: 4, term: "peron", searchVolume: "5K+", volumeIncrease: "+ 500%", started: "21 hours ago", status: "Active", relatedTerms: ["juan domingo perón"], trendData: [0,10,20,10,0,0,0,50,100,90,80,70,60,50,40,30,20,10,5,0] },
+    { id: 5, term: "nancy pazos", searchVolume: "5K+", volumeIncrease: "+ 1,000%", started: "10 hours ago", status: "Active", relatedTerms: ["georgina barbarossa"], trendData: [0,0,0,0,0,100,90,80,70,60,50,40,30,20,10,5,0,0,0,0] },
+  ]
 
 class DateService {
     static getDaysRange(days: number) {
@@ -384,6 +393,7 @@ const PageQueries = ({
                                     <TableHead className="text-right hover:cursor-pointer" onClick={() => handleSort(SortField.Position)}>
                                         <MetricSorting name={SortField.Position} direction={sort.direction} isEnabled={sort.isEnabled} field={sort.field} />
                                     </TableHead>
+                                    <TableHead className="text-right">Past 30 days</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -393,6 +403,13 @@ const PageQueries = ({
                                         <TableCell className="text-right">{query.impressions}</TableCell>
                                         <TableCell className="text-right">{query.clicks}</TableCell>
                                         <TableCell className="text-right pr-4">{Math.round(query.position)}</TableCell>
+                                        <TableCell className="">
+                                            <ResponsiveContainer width={100} height={40}>
+                                                <LineChart data={trendsData[0].trendData.map((value, index) => ({ value }))}>
+                                                    <Line type="monotone" dataKey="value" stroke="#22c55e" strokeWidth={2} dot={false} />
+                                                </LineChart>
+                                            </ResponsiveContainer>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
