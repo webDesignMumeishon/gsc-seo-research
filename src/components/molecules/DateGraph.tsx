@@ -1,4 +1,3 @@
-import ISO8601 from '@/utils/ISO8601'
 import React, { useMemo } from 'react'
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Line } from "recharts"
 
@@ -47,8 +46,6 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
             return item;
         });
     }, [displayData]);
-
-    console.log(displayData)
 
     return (
         <ResponsiveContainer width="100%" height={400}>

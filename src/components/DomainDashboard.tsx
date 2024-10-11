@@ -28,47 +28,8 @@ import { GetSiteMetrics } from "@/app/actions/google"
 import { useSiteContext } from "@/context/SiteContext"
 import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
-
-// Generate 365 days of data
-const generateDailyData = () => {
-    const data = []
-    const startDate = new Date(2024, 0, 1) // Start from January 1, 2024
-    for (let i = 0; i < 365; i++) {
-        const date = new Date(startDate)
-        date.setDate(startDate.getDate() + i)
-        data.push({
-            date: date.toISOString().split('T')[0], // Format as YYYY-MM-DD
-            desktop: Math.floor(Math.random() * 300) + 50,
-            mobile: Math.floor(Math.random() * 200) + 30,
-            note: "", // Initialize empty note for each day
-        })
-    }
-    return data
-}
-
-const aggregateMonthlyData = (dailyData) => {
-    const monthlyData = dailyData.reduce((acc, curr) => {
-        const month = new ISO8601(curr.date).getYearMonth()
-        if (!acc[month]) {
-            acc[month] = { ctr: 0, impressions: 0, position: 0, clicks: 0 }
-        }
-        acc[month].ctr += curr.ctr
-        acc[month].impressions += curr.impressions
-        acc[month].position += curr.position
-        acc[month].clicks += curr.clicks
-        return acc
-    }, {})
-
-    const monthsCount = Object.keys(monthlyData).length
-
-    return Object.entries(monthlyData).map(([date, data]) => ({
-        date,
-        ctr: Math.round(data.ctr / monthsCount),
-        impressions: data.impressions,
-        position: Math.round(data.position / monthsCount),
-        clicks: data.clicks,
-    }))
-}
+import { aggregateMonthlyData } from "@/utils/metrics"
+import { GraphMetrics } from "@/types/googleapi"
 
 type Props = {
     url: string
@@ -79,7 +40,7 @@ export default function DomainDashboard({ url }: Props) {
     const { userIdClerk } = useSiteContext();
 
     const [isMonthly, setIsMonthly] = useState(false)
-    const [chartData, setChartData] = useState<any[]>(generateDailyData())
+    const [chartData, setChartData] = useState<GraphMetrics[]>([])
     const [selectedPoint, setSelectedPoint] = useState(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
@@ -99,7 +60,6 @@ export default function DomainDashboard({ url }: Props) {
     )
 
     const handleDataPointClick = useCallback((data) => {
-        console.log(data)
         setSelectedPoint(data)
         setCurrentNote(data.note)
         setIsDialogOpen(true)
@@ -134,6 +94,9 @@ export default function DomainDashboard({ url }: Props) {
         }
         return null
     }
+
+    console.log(displayData)
+
 
     const tickFormatter = (value: string) => {
         const date = new ISO8601(value)

@@ -34,7 +34,6 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const fetchSites = async () => {
             const fetchedSites = await cachedGetSites(userIdClerk);
-            console.log('CALLING ======>', fetchedSites)
             setSites(fetchedSites);
             if (fetchedSites && fetchedSites.length > 0) {
                 setSelectedSite(fetchedSites[0]);

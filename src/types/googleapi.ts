@@ -12,10 +12,12 @@ export type GoogleDataRow = {
     clicks: number;
 }
 
-// type ISO8601 = string
+export type GraphMetrics = GoogleDataRow & {
+    date: string
+}
 
-export type SiteMetrics = GoogleDataRow & {
-    date: ISO8601
+export type DateKeyDataRow = {
+    [key: string]: GoogleDataRow
 }
 
 

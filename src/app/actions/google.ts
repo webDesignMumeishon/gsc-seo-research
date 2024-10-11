@@ -10,7 +10,8 @@ import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
-import { SiteMetrics, GoogleDataRow } from '@/types/googleapi';
+import { GraphMetrics, GoogleDataRow } from '@/types/googleapi';
+import GraphMetrics from '@/utils/metrics';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -64,7 +65,7 @@ export const PagesQueryCount = async (userId: string, page: string) => {
     return result
 }
 
-export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<SiteMetrics[]> => {
+export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<GraphMetrics[]> => {
     const token = await GetUserToken(userId)
 
     oauth2Client.setCredentials({
