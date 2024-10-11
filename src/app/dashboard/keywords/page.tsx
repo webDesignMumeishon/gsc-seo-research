@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { PagesQueryCount } from '@/app/actions/google'
 import { useSiteContext } from '@/context/SiteContext'
 import NoKeywordsData from '@/components/NoKeywordsData'
 import { PageQuery } from '@/types'

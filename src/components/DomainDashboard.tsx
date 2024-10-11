@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useCallback, useMemo, useEffect } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { TrendingUp } from "lucide-react"
 import { ResponsiveContainer } from "recharts"
 
 import {
-    Card,
     CardContent,
     CardDescription,
     CardFooter,
@@ -27,7 +26,6 @@ import { Switch } from "@/components/ui/switch"
 import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
-import { GraphMetrics } from "@/types/googleapi"
 import GraphMetricsHook from "@/hooks/GrapMetricsHook"
 import { CategoricalChartState } from "recharts/types/chart/types"
 
@@ -61,7 +59,7 @@ export default function DomainDashboard({ url }: Props) {
     const handleNoteSave = useCallback(() => {
         if (selectedPoint) {
             const newChartData = chartData.map(item =>
-                item.date === selectedPoint.date ? { ...item, note: currentNote } : item
+                item.date === (selectedPoint as any).date  ? { ...item, note: currentNote } : item
             )
             setChartData(newChartData)
             setIsDialogOpen(false)
@@ -136,7 +134,7 @@ export default function DomainDashboard({ url }: Props) {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add/Edit Note for {selectedPoint?.date}</DialogTitle>
+                        <DialogTitle>Add/Edit Note for XXXXXXX</DialogTitle>
                         <DialogDescription>
                             Enter your note for this date. This will be displayed when hovering over the data point.
                         </DialogDescription>

@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
-import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer, Line } from "recharts"
+import { GraphMetrics } from "@/types/googleapi"
+import { Area, AreaChart, XAxis, Tooltip, ResponsiveContainer } from "recharts"
 
 type Props = {
-    displayData: any[]
+    displayData: GraphMetrics[]
     handleDataPointClick: any
     tickFormatterCallback: any
-    CustomTooltip: React.JSX.Element
+    CustomTooltip: any
 }
 
 const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, CustomTooltip }: Props) => {

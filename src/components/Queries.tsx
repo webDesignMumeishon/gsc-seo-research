@@ -405,7 +405,7 @@ const PageQueries = ({
                                         <TableCell className="text-right pr-4">{Math.round(query.position)}</TableCell>
                                         <TableCell className="">
                                             <ResponsiveContainer width={100} height={40}>
-                                                <LineChart data={trendsData[0].trendData.map((value, index) => ({ value }))}>
+                                                <LineChart data={trendsData[0].trendData.map((value) => ({ value }))}>
                                                     <Line type="monotone" dataKey="value" stroke="#22c55e" strokeWidth={2} dot={false} />
                                                 </LineChart>
                                             </ResponsiveContainer>

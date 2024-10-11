@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server'
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
-import Sidebar from '@/components/Sidebar';
-import WebsiteSelector from '@/components/WebsiteSelector';
+// import Sidebar from '@/components/Sidebar';
+// import WebsiteSelector from '@/components/WebsiteSelector';
 import { SiteProvider } from '@/context/SiteContext';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {

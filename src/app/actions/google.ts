@@ -1,6 +1,6 @@
 'use server'
 
-import { google, webmasters_v3 } from 'googleapis'
+import { google } from 'googleapis'
 import { revalidateTag } from 'next/cache';
 import { auth } from '@clerk/nextjs/server'
 
@@ -11,7 +11,6 @@ import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
 import { GraphMetrics, GoogleDataRow } from '@/types/googleapi';
-import GraphMetrics from '@/utils/metrics';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';

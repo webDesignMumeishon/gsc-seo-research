@@ -1,8 +1,8 @@
 import oauth2Client from "@/lib/oauth2-client";
-import { google, webmasters_v3 } from 'googleapis'
+import { google } from 'googleapis'
 
 
-export async function GET(req: Request) {
+export async function GET() {
     oauth2Client.setCredentials({
         access_token: 'ya29.a0AcM612zBtOATa5yaEe1-sxIRmENqAAbHS6cHyI6l4RWYxPG9FWs7-U19-ktTJj8VOF_EywtB2sAxxQRDfTG5_J6176roi9KO60hdAR2q_-5wgKMSlVF2ATHafXUSd_G7iigBvj6u0J8U4QW1dqA-TVUSiO6BT_XNZK2CjceeaCgYKAWsSARISFQHGX2MizdDro0whu2SMEkLuc1DYXQ0175',
         refresh_token: '1//0hLJ4tDKkGOWrCgYIARAAGBESNwF-L9Ir9yUB9CNOHB_8H4wvwzKRjL3K6jMr5kWjTPxZCp3UhpOm_bUSgzBQqlvlOYxgnhw_jDc'

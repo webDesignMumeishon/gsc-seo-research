@@ -1,7 +1,6 @@
 import { oauth2Client } from '@/lib/oauth2-client';
 import { OAuth2Client } from 'google-auth-library';
 import { google, webmasters_v3 } from 'googleapis'
-import GoogleTrends from './trends';
 
 class GoogleSearchConsoleService {
     private oauth2Client: OAuth2Client = oauth2Client
