@@ -1,3 +1,4 @@
+// YYYY-MM-DD > 2024-06-02
 class ISO8601 {
     public date: string
 
