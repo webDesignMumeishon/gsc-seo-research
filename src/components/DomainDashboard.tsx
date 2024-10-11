@@ -76,7 +76,7 @@ type Props = {
 
 
 export default function DomainDashboard({ url }: Props) {
-    const { selectedSite, userIdClerk } = useSiteContext();
+    const { userIdClerk } = useSiteContext();
 
     const [isMonthly, setIsMonthly] = useState(false)
     const [chartData, setChartData] = useState<any[]>(generateDailyData())
@@ -97,9 +97,6 @@ export default function DomainDashboard({ url }: Props) {
         () => isMonthly ? aggregateMonthlyData(chartData) : chartData,
         [chartData, isMonthly]
     )
-
-    console.log(displayData)
-
 
     const handleDataPointClick = useCallback((data) => {
         console.log(data)
@@ -141,7 +138,7 @@ export default function DomainDashboard({ url }: Props) {
     const tickFormatter = (value: string) => {
         const date = new ISO8601(value)
         if (isMonthly) {
-            return new Error('implement monthly')
+            return date.getYearMonth()
         }
         return date.getDay()
     }
@@ -170,7 +167,6 @@ export default function DomainDashboard({ url }: Props) {
                         displayData={displayData}
                         CustomTooltip={CustomTooltip}
                         handleDataPointClick={handleDataPointClick}
-                        interval={isMonthly ? 1 : 2}
                         tickFormatterCallback={tickFormatter}
                     />
                 </ResponsiveContainer>

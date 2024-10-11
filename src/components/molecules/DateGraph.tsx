@@ -6,17 +6,17 @@ type Props = {
     displayData: any[]
     handleDataPointClick: any
     tickFormatterCallback: any
-    interval: number
     CustomTooltip: React.JSX.Element
 }
 
-const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, interval, CustomTooltip }: Props) => {
+const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, CustomTooltip }: Props) => {
+
     const modifiedData = useMemo(() => {
         if (displayData.length < 2) return displayData;
-        
+
         const lastIndex = displayData.length - 1;
         const secondLastIndex = lastIndex - 1;
-        
+
         return displayData.map((item, index) => {
             if (index === lastIndex) {
                 return {
@@ -31,7 +31,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, i
                     ctr: null
                 };
             }
-            else if(index === secondLastIndex){
+            else if (index === secondLastIndex) {
                 return {
                     ...item,
                     clicksDotted: item.clicks,
@@ -48,7 +48,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, i
         });
     }, [displayData]);
 
-    console.log(modifiedData)
+    console.log(displayData)
 
     return (
         <ResponsiveContainer width="100%" height={400}>
@@ -56,8 +56,8 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, i
                 data={modifiedData}
                 margin={{
                     top: 10,
-                    right: 30,
-                    left: 0,
+                    right: 50,
+                    left: 50,
                     bottom: 0,
                 }}
                 onClick={handleDataPointClick}
@@ -65,9 +65,8 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, i
                 <XAxis
                     dataKey="date"
                     tickFormatter={tickFormatterCallback}
-                    interval={interval}
                 />
-                <Tooltip content={<CustomTooltip/>} />
+                <Tooltip content={<CustomTooltip />} />
                 <defs>
                     <linearGradient id="colorClick" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#4285f4" stopOpacity={0.8} />
@@ -85,7 +84,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, i
                         <stop offset="5%" stopColor="#e87109" stopOpacity={0.8} />
                         <stop offset="95%" stopColor="#e87109" stopOpacity={0.1} />
                     </linearGradient>
-                    
+
                 </defs>
                 <Area
                     type="monotone"
