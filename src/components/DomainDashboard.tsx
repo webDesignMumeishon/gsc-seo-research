@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from "react"
 import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts"
+import { ResponsiveContainer } from "recharts"
 
 import {
     Card,
@@ -24,12 +24,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { GetSiteMetrics } from "@/app/actions/google"
-import { useSiteContext } from "@/context/SiteContext"
 import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { GraphMetrics } from "@/types/googleapi"
+import GraphMetricsHook from "@/hooks/GrapMetricsHook"
+import { CategoricalChartState } from "recharts/types/chart/types"
 
 type Props = {
     url: string
@@ -37,35 +37,24 @@ type Props = {
 
 
 export default function DomainDashboard({ url }: Props) {
-    const { userIdClerk } = useSiteContext();
+    const { chartData, setChartData } = GraphMetricsHook(url)
 
     const [isMonthly, setIsMonthly] = useState(false)
-    const [chartData, setChartData] = useState<GraphMetrics[]>([])
-    const [selectedPoint, setSelectedPoint] = useState(null)
+    const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const r = await GetSiteMetrics(userIdClerk, url)
-            setChartData(r)
-        }
-        fetchData()
-    }, [])
 
     const displayData = useMemo(
         () => isMonthly ? aggregateMonthlyData(chartData) : chartData,
         [chartData, isMonthly]
     )
 
-    const handleDataPointClick = useCallback((data) => {
+    const handleDataPointClick = useCallback((data: CategoricalChartState) => {
         setSelectedPoint(data)
-        setCurrentNote(data.note)
         setIsDialogOpen(true)
     }, [])
 
-    const handleNoteChange = useCallback((e) => {
+    const handleNoteChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
         setCurrentNote(e.target.value)
     }, [])
 
@@ -94,9 +83,6 @@ export default function DomainDashboard({ url }: Props) {
         }
         return null
     }
-
-    console.log(displayData)
-
 
     const tickFormatter = (value: string) => {
         const date = new ISO8601(value)
