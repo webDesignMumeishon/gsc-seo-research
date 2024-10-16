@@ -1,6 +1,5 @@
 import { oauth2Client } from "@/lib/oauth2-client";
 import prisma from "@/lib/prisma";
-import { Site } from "@/types/site";
 import { Token } from "@prisma/client";
 
 class TokenService {

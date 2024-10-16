@@ -15,8 +15,6 @@ export async function GetUserToken(userId: string, siteUrl: string) {
         },
     });
 
-
-
     if (site?.token !== undefined) {
         TokenService.refreshToken(site.token)
         return site.token
@@ -25,9 +23,6 @@ export async function GetUserToken(userId: string, siteUrl: string) {
         throw new Error('Missing token')
     }
 }
-
-// 'sc-domain:spokane-realtors.com' -> 103070373999482880818
-// sc-domain:spokaneroofing.co -> 103070373999482880818
 
 export async function GetUserTokenByTokenId(subId: string) {
     const token = await prisma.token.findFirst({
