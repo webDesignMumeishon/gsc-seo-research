@@ -34,7 +34,7 @@ export default function Sidebar() {
             <div className="p-2 flex align-middle items-center">
                 <h2 className="text-md font-semibold tracking-tight">
                     <Link href="/">
-                        <Image src="/logo.png" alt="Console Insight Logo" width={200} height={100} />
+                        <Image src="/logo-295x100.png" alt="Console Insight Logo" width={200} height={100} />
                     </Link>
                 </h2>
                 <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600 relative bottom-[2px]' onClick={() => setMenu(false)} />
