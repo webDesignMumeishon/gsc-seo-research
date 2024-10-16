@@ -16,30 +16,14 @@ class SiteService {
         });
     }
 
-    public static async saveSites(userId: string, accountId: string, accessToken: string, refreshToken: string, sites: Site[]) {
-        const token = await prisma.token.upsert({
-            where: {
-                userId_accountId: {
-                    userId: userId,
-                    accountId
-                },
-            },
-            update: {},
-            create: {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                userId: userId,
-                accountId
-            }
-        });
-
+    public static async saveSites(userId: string, tokenId: number, sites: Site[]) {
         const sitesCreated = await Promise.all(sites.map(async site => {
             return prisma.site.create({
                 data: {
                     url: site.url,
                     permission: site.permission,
                     userId: userId,
-                    tokenId: token.id
+                    tokenId: tokenId
                 },
                 select: {
                     id: true,

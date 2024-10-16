@@ -1,4 +1,6 @@
 import { oauth2Client } from "@/lib/oauth2-client";
+import prisma from "@/lib/prisma";
+import { decodeTokenId } from "@/utils/jwt";
 
 
 export async function GET(req: Request) {
@@ -12,9 +14,25 @@ export async function GET(req: Request) {
             oauth2Client.setCredentials(tokens);
 
             const { userId } = JSON.parse(state ?? '');
-       
 
-            return Response.redirect(`http://localhost:3000/connect?access_token=${tokens.access_token}&refresh_token=${tokens.refresh_token}&userId=${userId}`);
+            const subId = decodeTokenId(tokens.id_token!)
+
+            const token = await prisma.token.upsert({
+                where: {
+                    subId_userId: { userId, subId: subId },
+                },
+                update: {},
+                create: {
+                    access_token: tokens.access_token!,
+                    refresh_token: tokens.refresh_token!,
+                    userId,
+                    expiry_date: new Date(tokens.expiry_date!),
+                    subId,
+                }
+            });
+
+
+            return Response.redirect(`http://localhost:3000/connect?subId=${token.subId}&userId=${userId}`);
         }
         else {
             throw new Error('Error retrieving access token')
@@ -24,11 +42,3 @@ export async function GET(req: Request) {
         // Response.json({ msg: error?.message });
     }
 }
-
-oauth2Client.on('tokens', (tokens) => {
-    if (tokens.refresh_token) {
-        // Store the refresh token in your database
-        console.log('Refresh Token:', tokens.refresh_token);
-    }
-    console.log('Access Token:', tokens.access_token);
-});

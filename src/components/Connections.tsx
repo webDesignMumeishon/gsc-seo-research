@@ -17,12 +17,11 @@ import { Site } from '@/types/site'
 
 type Props = {
     userWebsites: any[]
-    access_token: string
-    refresh_token: string
+    subId: string
     userId: string
 }
 
-const Connections = ({ userWebsites, access_token, refresh_token, userId }: Props) => {
+const Connections = ({ userWebsites, subId, userId }: Props) => {
     const [selectedWebsites, setSelectedWebsites] = useState<Site[]>([])
     const [loading, setLoading] = useState(false);
     const router = useRouter()
@@ -37,7 +36,7 @@ const Connections = ({ userWebsites, access_token, refresh_token, userId }: Prop
     const handleSubmit = async () => {
         try {
             setLoading(true)
-            await saveUserSites(access_token, refresh_token, userId, selectedWebsites)
+            await saveUserSites(subId, userId, selectedWebsites)
             toast({
                 title: "Scheduled: Catch up ",
                 description: "Friday, February 10, 2023 at 5:57 PM",

@@ -12,8 +12,8 @@ export const cachedGetSites = unstable_cache(
 );
 
 export const cachedGetPagesList = unstable_cache(
-    async (userId: string, page: string) => {
-        return await PagesQueryCount(userId, page);
+    async (userId: string, page: string, siteUrl: string) => {
+        return await PagesQueryCount(userId, page, siteUrl);
     },
     ['pages-list'],
     { tags: [GET_PAGES_LIST_TAG], revalidate: GLOBAL_REVALIDATE_CACHE_SECONDS }

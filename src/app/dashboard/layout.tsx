@@ -6,6 +6,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 // import Sidebar from '@/components/Sidebar';
 // import WebsiteSelector from '@/components/WebsiteSelector';
 import { SiteProvider } from '@/context/SiteContext';
+import Sidebar from '@/components/Sidebar';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {
     const user = await currentUser()
@@ -25,7 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 </SignedIn>
             </div>
             <div className="flex min-h-screen bg-gray-100">
-                {/* <Sidebar /> */}
+                <Sidebar />
                 <div className='flex flex-col w-full'>
                     {/* <div className='flex'>
                         <WebsiteSelector />

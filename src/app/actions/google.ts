@@ -5,20 +5,21 @@ import { revalidateTag } from 'next/cache';
 import { auth } from '@clerk/nextjs/server'
 
 import { oauth2Client } from '@/lib/oauth2-client';
-import { GetUserToken } from './token';
+import { GetUserToken, GetUserTokenByTokenId } from './token';
 import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
 import { GraphMetrics, GoogleDataRow } from '@/types/googleapi';
+import prisma from '@/lib/prisma';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
 const rowLimit = 5000;
 
 
-export const PagesQueryCount = async (userId: string, page: string) => {
-    const token = await GetUserToken(userId)
+export const PagesQueryCount = async (userId: string, page: string, siteUrl: string) => {
+    const token = await GetUserToken(userId, siteUrl)
 
     oauth2Client.setCredentials({
         access_token: token?.access_token,
@@ -34,10 +35,9 @@ export const PagesQueryCount = async (userId: string, page: string) => {
         requestBody: {
             startDate,
             endDate,
-            dimensions: ['page', 'query'], // Request data for each page
-            rowLimit, // Maximum number of rows to retrieve
-            dimensionFilterGroups: [],  // No filters to get all data
-
+            dimensions: ['page', 'query'],
+            rowLimit,
+            dimensionFilterGroups: [],
         },
     });
 
@@ -65,12 +65,13 @@ export const PagesQueryCount = async (userId: string, page: string) => {
 }
 
 export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<GraphMetrics[]> => {
-    const token = await GetUserToken(userId)
+    const token = await GetUserToken(userId, siteUrl)
 
     oauth2Client.setCredentials({
         access_token: token?.access_token,
-        refresh_token: token?.refresh_token
+        refresh_token: token?.refresh_token,
     })
+
 
     const webmasters = google.webmasters({
         version: 'v3',
@@ -88,31 +89,38 @@ export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<G
         },
     });
 
-    const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc, curr) => {
-        const dayKey = curr?.keys?.[0] as string
-        const clicks = curr.clicks || 0
-        const ctr = curr.ctr || 0
-        const impressions = curr.impressions || 0
-        const position = curr.position || 0
+    try {
+        const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc, curr) => {
+            const dayKey = curr?.keys?.[0] as string
+            const clicks = curr.clicks || 0
+            const ctr = curr.ctr || 0
+            const impressions = curr.impressions || 0
+            const position = curr.position || 0
 
-        if (!acc[dayKey]) {
-            acc[dayKey] = {
-                clicks,
-                ctr,
-                impressions,
-                position,
+            if (!acc[dayKey]) {
+                acc[dayKey] = {
+                    clicks,
+                    ctr,
+                    impressions,
+                    position,
+                }
             }
+
+            return acc
+        }, {})
+
+        if (result === undefined) {
+            return []
         }
-
-        return acc
-    }, {})
-
-    if (result === undefined) {
+        else {
+            return Object.keys(result).map(row => ({ date: row, ...result[row] }))
+        }
+    } catch (error) {
+        console.log(error)
         return []
     }
-    else {
-        return Object.keys(result).map(row => ({ date: row, ...result[row] }))
-    }
+
+
 
 }
 
@@ -130,11 +138,18 @@ export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: 
     return await console.getQueriesByPage(url, pageUrl, startDate, endDate)
 }
 
-export const GetSitesGoogle = async (accessToken: string, refreshToken: string, userId: string): Promise<Site[]> => {
+export const GetSitesGoogle = async (subId: string, userId: string): Promise<Site[]> => {
+
+    const token = await prisma.token.findFirst({
+        where: {
+            subId
+        }
+    })
+
     try {
         oauth2Client.setCredentials({
-            access_token: accessToken,
-            refresh_token: refreshToken
+            access_token: token?.access_token,
+            refresh_token: token?.refresh_token
         })
 
         const webmasters = google.webmasters({
@@ -162,28 +177,18 @@ export const GetSitesGoogle = async (accessToken: string, refreshToken: string, 
         return []
     }
 }
+export const saveUserSites = async (subId: string, userId: string, sites: Site[]) => {
+    const token = await GetUserTokenByTokenId(subId)
 
-export const saveUserSites = async (accessToken: string, refreshToken: string, userId: string, sites: Site[]) => {
-    oauth2Client.setCredentials({ access_token: accessToken, refresh_token: refreshToken })
-
-    const oauth2 = google.oauth2({
-        auth: oauth2Client,
-        version: 'v2',
-    });
+    oauth2Client.setCredentials({ access_token: token.access_token, refresh_token: token.refresh_token })
 
     try {
-        const userInfo = await oauth2.userinfo.get();
-
-        const sitesCreated = await SiteService.saveSites(userId, userInfo.data.id || '', accessToken, refreshToken, sites)
-
+        const sitesCreated = await SiteService.saveSites(userId, token.id, sites)
         revalidateTag(SITES_LIST_CACHE_TAG)
-
         return sitesCreated
     } catch (error) {
         console.log(error)
     }
-
-
 }
 
 export const GetQueries = async (userId: string, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {

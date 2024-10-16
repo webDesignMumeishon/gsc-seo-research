@@ -9,6 +9,7 @@ import { PageQuery } from '@/types'
 import ListPages from '@/components/ListPages'
 import PageQueries from '@/components/Queries'
 import { cachedGetPagesList } from '../../actions/cached'
+import WebsiteSelector from '@/components/WebsiteSelector'
 
 
 const Page = () => {
@@ -22,7 +23,7 @@ const Page = () => {
     useEffect(() => {
         const fetch = async (page: string) => {
             setLocalLoading(true)
-            const result = await cachedGetPagesList(userIdClerk, page);
+            const result = await cachedGetPagesList(userIdClerk, page, selectedSite?.url!);
             setpagesData(result)
             setLocalLoading(false)
         }
@@ -65,6 +66,9 @@ const Page = () => {
 
     return (
         <Card>
+            <div className='flex'>
+                <WebsiteSelector />
+            </div>
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">
                     {selectedPage === null ? 'Pages and Queries Overview' : `Queries for ${pagesData.find(p => p.id === selectedPage)?.page}`}
