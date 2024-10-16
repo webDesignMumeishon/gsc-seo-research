@@ -9,15 +9,16 @@ datasource db {
 }
 
 model Token {
-    id            Int    @id @default(autoincrement())
+    id            Int      @id @default(autoincrement())
+    subId         String
+    expiry_date   DateTime
     access_token  String
     refresh_token String
-    accountId     String
     userId        String
     Site          Site[]
 
     // Add a unique constraint for userId and accountId
-    @@unique([userId, accountId])
+    @@unique([subId, userId])
     @@map(name: "tokens")
 }
 
