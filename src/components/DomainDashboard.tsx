@@ -59,7 +59,7 @@ export default function DomainDashboard({ url }: Props) {
     const handleNoteSave = useCallback(() => {
         if (selectedPoint) {
             const newChartData = chartData.map(item =>
-                item.date === (selectedPoint as any).date  ? { ...item, note: currentNote } : item
+                item.date === (selectedPoint as any).date ? { ...item, note: currentNote } : item
             )
             setChartData(newChartData)
             setIsDialogOpen(false)
@@ -72,8 +72,10 @@ export default function DomainDashboard({ url }: Props) {
             return (
                 <div className="bg-background border rounded p-4 shadow-lg">
                     <p className="font-bold">{label}</p>
-                    <p>Desktop: {data.impressions}</p>
-                    <p>Mobile: {data.mobile}</p>
+                    <p>Clicks: {data.clicks}</p>
+                    <p>Impressions: {data.impressions}</p>
+                    <p>Position: {Math.round(data.position)}</p>
+                    <p>CTR: {Math.round(data.ctr)}%</p>
                     {data.note && <p className="mt-2">Note: {data.note}</p>}
                     <p className="mt-2 text-sm text-muted-foreground">Click to add/edit note</p>
                 </div>
@@ -109,15 +111,14 @@ export default function DomainDashboard({ url }: Props) {
                 </div>
             </CardHeader>
             <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                    <DateGraph
-                        displayData={displayData}
-                        CustomTooltip={CustomTooltip}
-                        handleDataPointClick={handleDataPointClick}
-                        tickFormatterCallback={tickFormatter}
-                    />
-                </ResponsiveContainer>
+                <DateGraph
+                    displayData={displayData}
+                    CustomTooltip={CustomTooltip}
+                    handleDataPointClick={handleDataPointClick}
+                    tickFormatterCallback={tickFormatter}
+                />
             </CardContent>
+
             <CardFooter>
                 <div className="flex w-full items-start gap-2 text-sm">
                     <div className="grid gap-2">

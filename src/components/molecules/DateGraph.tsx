@@ -49,11 +49,11 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
     }, [displayData]);
 
     return (
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={350}>
             <AreaChart
                 data={modifiedData}
                 margin={{
-                    top: 10,
+                    top: 50,
                     right: 50,
                     left: 50,
                     bottom: 0,
@@ -67,20 +67,23 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
                 <Tooltip content={<CustomTooltip />} />
                 <defs>
                     <linearGradient id="colorClick" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4285f4" stopOpacity={0.8} />
+                        <stop offset="5%" stopColor="#4285f4" stopOpacity={0.5} />
                         <stop offset="95%" stopColor="#4285f4" stopOpacity={0.1} />
                     </linearGradient>
+
                     <linearGradient id="colorImpressions" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#5e35b1" stopOpacity={0.8} />
+                        <stop offset="5%" stopColor="#5e35b1" stopOpacity={0.5} />
                         <stop offset="95%" stopColor="#5e35b1" stopOpacity={0.1} />
                     </linearGradient>
+
                     <linearGradient id="colorPosition" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#00897b" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#00897b" stopOpacity={0.1} />
+                        <stop offset="1%" stopColor="#e87109" stopOpacity={0.5} />
+                        <stop offset="99%" stopColor="#e87109" stopOpacity={0.1} />
                     </linearGradient>
+
                     <linearGradient id="colorCTR" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#e87109" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#e87109" stopOpacity={0.1} />
+                        <stop offset="5%" stopColor="#00897b" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#00897b" stopOpacity={0.1} />
                     </linearGradient>
 
                 </defs>
@@ -88,7 +91,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
                     type="monotone"
                     dataKey="clicks"
                     stroke="#4285f4"
-                    fillOpacity={1}
+                    fillOpacity={0.5}
                     fill="url(#colorClick)"
                 />
                 <Area
@@ -102,7 +105,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
                     type="monotone"
                     dataKey="impressions"
                     stroke="#5e35b1"
-                    fillOpacity={1}
+                    fillOpacity={0.5}
                     fill="url(#colorImpressions)"
                 />
                 <Area
@@ -115,28 +118,28 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
                 <Area
                     type="monotone"
                     dataKey="position"
-                    stroke="#00897b"
-                    fillOpacity={1}
+                    stroke="#e87109"
+                    fillOpacity={0.5}
                     fill="url(#colorPosition)"
                 />
                 <Area
                     type="monotone"
                     dataKey="positionDotted"
-                    stroke="#00897b"
+                    stroke="#e87109"
                     fillOpacity={0}
                     strokeDasharray="3 3"
                 />
                 <Area
                     type="monotone"
                     dataKey="ctr"
-                    stroke="#e87109"
+                    stroke="#00897b"
                     fillOpacity={1}
                     fill="url(#colorCTR)"
                 />
                 <Area
                     type="monotone"
                     dataKey="ctrDotted"
-                    stroke="#e87109"
+                    stroke="#00897b"
                     fillOpacity={0}
                     strokeDasharray="3 3"
                 />

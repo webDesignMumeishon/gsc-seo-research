@@ -93,7 +93,7 @@ export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<G
         const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc, curr) => {
             const dayKey = curr?.keys?.[0] as string
             const clicks = curr.clicks || 0
-            const ctr = curr.ctr || 0
+            const ctr = (curr.ctr! * 100) || 0
             const impressions = curr.impressions || 0
             const position = curr.position || 0
 
