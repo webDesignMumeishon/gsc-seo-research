@@ -12,6 +12,7 @@ import { Menu, ArrowLeftToLine } from "lucide-react"
 const sidebarItems = [
     { name: 'Dashboard', icon: BarChart2, href: '/dashboard' },
     { name: 'Connections', icon: ServerIcon, href: '/dashboard/search-console' },
+    { name: 'Keywords', icon: ServerIcon, href: '/dashboard/keywords' },
     { name: 'Summary', icon: ClipboardListIcon, href: '/dashboard/summary' },
     { name: 'Indexing', icon: SearchIcon, href: 'dashboard/indexing' },
 ]
@@ -45,12 +46,12 @@ export default function Sidebar() {
                         {sidebarItems.map((item) => (
                             <Button
                                 key={item.name}
-                                variant={activeItem === item.name ? "secondary" : "ghost"}
+                                variant={activeItem === item.name ? null : "ghost"}
                                 className={cn(
                                     "w-full justify-start",
                                     activeItem === item.name
-                                        ? "bg-gray-200 dark:bg-gray-700"
-                                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                                        ? "bg-primary dark:bg-gray-700 text-white"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-700 "
                                 )}
                                 onClick={() => {
                                     setActiveItem(item.name)
