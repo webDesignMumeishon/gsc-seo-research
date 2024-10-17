@@ -16,7 +16,7 @@ import { Site } from '@/types/site'
 
 
 type Props = {
-    userWebsites: any[]
+    userWebsites: Site[]
     subId: string
     userId: string
 }
@@ -26,27 +26,36 @@ const Connections = ({ userWebsites, subId, userId }: Props) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 
+    console.log(userWebsites)
+
     const { toast } = useToast()
 
-    const handleWebsiteToggle = (websiteId: string) => {
-        const site = userWebsites.find(site => site.id === websiteId)
-        setSelectedWebsites(prev => prev.find((site) => site.id === Number(websiteId)) ? prev.filter(site => site.id !== Number(websiteId)) : [...prev, site])
+    const handleWebsiteToggle = (website: Site) => {
+        const isWebsiteSelected = selectedWebsites.find((site) => (site.id === website.id))
+
+        const newSelectedWebsitesList = isWebsiteSelected !== undefined
+            ? selectedWebsites.filter(site => site.id !== website.id) // if website is already in the state we remove it
+            : [...selectedWebsites, website] // if website is not in the state we add it
+
+        setSelectedWebsites(newSelectedWebsitesList)
     }
 
     const handleSubmit = async () => {
-        try {
-            setLoading(true)
-            await saveUserSites(subId, userId, selectedWebsites)
-            toast({
-                title: "Scheduled: Catch up ",
-                description: "Friday, February 10, 2023 at 5:57 PM",
-                action: (
-                    <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-                ),
-            })
-            router.refresh();
-        } finally {
-            setLoading(false)
+        if (selectedWebsites.length > 0) {
+            try {
+                setLoading(true)
+                await saveUserSites(subId, userId, selectedWebsites)
+                toast({
+                    title: "Scheduled: Catch up ",
+                    description: "Friday, February 10, 2023 at 5:57 PM",
+                    action: (
+                        <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+                    ),
+                })
+                router.refresh();
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
@@ -82,13 +91,13 @@ const Connections = ({ userWebsites, subId, userId }: Props) => {
                                             <Checkbox
                                                 id={`website-${website.id}`}
                                                 checked={!!selectedWebsites.find((site) => site.id === website.id)}
-                                                onCheckedChange={() => handleWebsiteToggle(website.id)}
+                                                onCheckedChange={() => handleWebsiteToggle(website)}
+                                                disabled={website.permission === "siteUnverifiedUser"}
                                             />
                                             <label
                                                 htmlFor={`website-${website.id}`}
                                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
                                             >
-                                                <span className="mr-2">{website.icon}</span>
                                                 {website.url}
                                             </label>
                                         </div>
@@ -102,11 +111,16 @@ const Connections = ({ userWebsites, subId, userId }: Props) => {
                         {selectedWebsites.length} website(s) selected
                     </p>
                     <div className='flex gap-4'>
+                        <Button variant="destructive">
+                            <Link href='/dashboard'>
+                                Cancel
+                            </Link>
+                        </Button>
                         <Button onClick={() => handleSubmit()} disabled={selectedWebsites.length === 0} variant="outline">
                             <CheckCircle className="mr-2 h-4 w-4" />
                             Connect Selected Websites
                         </Button>
-                        <Button >
+                        <Button onClick={() => handleSubmit()} disabled={selectedWebsites.length === 0}>
                             <Check className="mr-2 h-4 w-4" />
                             <Link href='/dashboard'>
                                 Finish
