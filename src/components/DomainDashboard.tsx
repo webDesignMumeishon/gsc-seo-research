@@ -26,17 +26,17 @@ import { Switch } from "@/components/ui/switch"
 import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
-import GraphMetricsHook from "@/hooks/GrapMetricsHook"
 import { CategoricalChartState } from "recharts/types/chart/types"
+import { GraphMetrics } from "@/types/googleapi"
+import { columns } from "@/static/columns"
+import { DataTable } from "./PagesTable"
 
 type Props = {
-    url: string
+    chartData: GraphMetrics[]
 }
 
 
-export default function DomainDashboard({ url }: Props) {
-    const { chartData, setChartData } = GraphMetricsHook(url)
-
+export default function DomainDashboard({ chartData }: Props) {
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -61,7 +61,7 @@ export default function DomainDashboard({ url }: Props) {
             const newChartData = chartData.map(item =>
                 item.date === (selectedPoint as any).date ? { ...item, note: currentNote } : item
             )
-            setChartData(newChartData)
+            // setChartData(newChartData)
             setIsDialogOpen(false)
         }
     }, [selectedPoint, currentNote, chartData])
@@ -131,6 +131,93 @@ export default function DomainDashboard({ url }: Props) {
                     </div>
                 </div>
             </CardFooter>
+
+            <DataTable columns={columns} data={[
+                {
+                    "page": "190cee9",
+                    "impressions": 459,
+                    "clicks": 5788,
+                    "ctr": 0.55,
+                    "position": 5370
+                },
+                {
+                    "page": "1951d3e",
+                    "impressions": 176,
+                    "clicks": 8497,
+                    "ctr": 8.45,
+                    "position": 5369
+                },
+                {
+                    "page": "4d3937b",
+                    "impressions": 500,
+                    "clicks": 7839,
+                    "ctr": 3.07,
+                    "position": 3635
+                },
+                {
+                    "page": "5cb31fb",
+                    "impressions": 272,
+                    "clicks": 6522,
+                    "ctr": 8.67,
+                    "position": 4026
+                },
+                {
+                    "page": "32a9b65",
+                    "impressions": 150,
+                    "clicks": 4209,
+                    "ctr": 8.93,
+                    "position": 243
+                },
+                {
+                    "page": "3ae3a6d",
+                    "impressions": 209,
+                    "clicks": 5196,
+                    "ctr": 2.2,
+                    "position": 6733
+                },
+                {
+                    "page": "327173e",
+                    "impressions": 774,
+                    "clicks": 7548,
+                    "ctr": 8.89,
+                    "position": 9895
+                },
+                {
+                    "page": "347ba67",
+                    "impressions": 882,
+                    "clicks": 1492,
+                    "ctr": 8.5,
+                    "position": 9792
+                },
+                {
+                    "page": "4910e0a",
+                    "impressions": 235,
+                    "clicks": 3010,
+                    "ctr": 8.68,
+                    "position": 523
+                },
+                {
+                    "page": "c6762c",
+                    "impressions": 693,
+                    "clicks": 9605,
+                    "ctr": 1.47,
+                    "position": 1258
+                },
+                {
+                    "page": "42eab23",
+                    "impressions": 330,
+                    "clicks": 1990,
+                    "ctr": 3.75,
+                    "position": 3805
+                },
+                {
+                    "page": "26fbe92",
+                    "impressions": 164,
+                    "clicks": 3130,
+                    "ctr": 4.31,
+                    "position": 2909
+                }
+            ]} />
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
