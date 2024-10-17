@@ -3,12 +3,10 @@ import { webmasters_v3 } from "googleapis";
 export type GoogleAPISitesList = webmasters_v3.Schema$WmxSite[]
 export type GoogleApiDataRaw = webmasters_v3.Schema$ApiDataRow
 
-export type GoogleDataRow = {
-    ctr: number;
-    impressions: number;
+export type GoogleMetrics = Required<Pick<GoogleApiDataRaw, 'clicks' | 'ctr' | 'position' | 'impressions'>>;
+
+export type GoogleDataRow = GoogleMetrics & {
     keys?: string[];
-    position: number;
-    clicks: number;
 }
 
 export type GraphMetrics = GoogleDataRow & {
