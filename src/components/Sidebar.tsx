@@ -23,45 +23,50 @@ export default function Sidebar() {
 
     if (!menu) {
         return (
-            <div className='p-4 absolute left-0 cursor-pointer'>
+            <div className='cursor-pointer p-2'>
                 <Menu onClick={() => setMenu(true)} />
             </div>
         )
     }
 
     return (
-        <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
-            <div className="p-2 flex align-middle items-center">
-                <h2 className="text-md font-semibold tracking-tight">
-                    <Link href="/">
-                        <Image src="/logo-295x100.png" alt="Console Insight Logo" width={200} height={100} />
-                    </Link>
-                </h2>
-                <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600 relative bottom-[2px]' onClick={() => setMenu(false)} />
+        <div className='absolute bg-white' style={{ zIndex: '1000' }}>
+            <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
+                <div className="p-2 flex align-middle items-center">
+                    <h2 className="text-md font-semibold tracking-tight">
+                        <Link href="/">
+                            <Image src="/logo-295x100.png" alt="Console Insight Logo" width={200} height={100} />
+                        </Link>
+                    </h2>
+                    <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600 relative bottom-[2px]' onClick={() => setMenu(false)} />
+                </div>
+                <ScrollArea className="flex-1">
+                    <nav className="grid gap-1 px-2">
+                        {sidebarItems.map((item) => (
+                            <Button
+                                key={item.name}
+                                variant={activeItem === item.name ? "secondary" : "ghost"}
+                                className={cn(
+                                    "w-full justify-start",
+                                    activeItem === item.name
+                                        ? "bg-gray-200 dark:bg-gray-700"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                                )}
+                                onClick={() => {
+                                    setActiveItem(item.name)
+                                    setMenu(false)
+                                }}
+                                asChild
+                            >
+                                <Link href={`${item.href}`}>
+                                    <item.icon className="mr-2 h-4 w-4" />
+                                    {item.name}
+                                </Link>
+                            </Button>
+                        ))}
+                    </nav>
+                </ScrollArea>
             </div>
-            <ScrollArea className="flex-1">
-                <nav className="grid gap-1 px-2">
-                    {sidebarItems.map((item) => (
-                        <Button
-                            key={item.name}
-                            variant={activeItem === item.name ? "secondary" : "ghost"}
-                            className={cn(
-                                "w-full justify-start",
-                                activeItem === item.name
-                                    ? "bg-gray-200 dark:bg-gray-700"
-                                    : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                            )}
-                            onClick={() => setActiveItem(item.name)}
-                            asChild
-                        >
-                            <Link href={`${item.href}`}>
-                                <item.icon className="mr-2 h-4 w-4" />
-                                {item.name}
-                            </Link>
-                        </Button>
-                    ))}
-                </nav>
-            </ScrollArea>
         </div>
     )
 }

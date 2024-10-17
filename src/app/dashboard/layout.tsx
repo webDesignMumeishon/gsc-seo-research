@@ -15,16 +15,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     return (
         <SiteProvider>
-            <div className='p-4 absolute right-0'>
-                <SignedOut>
-                    <SignInButton />
-                </SignedOut>
-                <SignedIn>
-                    <UserButton />
-                </SignedIn>
+            <div className='flex min-h-10 bg-gray-100'>
+                <Sidebar />
+
+                <div className='ml-auto p-2'>
+                    <SignedOut>
+                        <SignInButton />
+                    </SignedOut>
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
+                </div>
+
             </div>
             <div className="flex min-h-screen bg-gray-100">
-                <Sidebar />
                 <div className='flex flex-col w-full'>
                     <div className='px-6'>
                         {children}
