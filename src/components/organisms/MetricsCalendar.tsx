@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogDescription,
-    DialogFooter,
 } from "@/components/ui/dialog"
 import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
@@ -23,9 +21,7 @@ type SelectDate = '7d' | '30d' | '90d' | 'custom'
 
 
 const MetricsCalendar = ({ date, setDate }: Props) => {
-    const [customDateRange, setCustomDateRange] = useState<{ from: Date | undefined; to: Date | undefined; } | undefined>(undefined)
     const [selectDate, setSelectDate] = useState<SelectDate>('30d')
-
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
     const handleDateRangeChange = (value: SelectDate) => {
@@ -44,12 +40,27 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
         }
         else if (value === 'custom') {
             setIsCalendarOpen(true)
-            setCustomDateRange(undefined)
+            setDate({ from: undefined, to: undefined })
+        }
+    }
+
+    const handleOnSelectRange = (range: DateRange | undefined) => {
+        if (range !== undefined) {
+            if (range.from !== undefined && range.to === undefined) {
+                setDate({ from: range.from, to: undefined })
+            }
+            if (range.from !== undefined && range.to !== undefined) {
+                setDate({ from: range.from, to: range.to })
+                setIsCalendarOpen(false)
+            }
+        }
+        else {
+            setDate({ from: undefined, to: undefined })
         }
     }
 
     const formatDateRange = () => {
-        if (selectDate !== 'custom' || !customDateRange) {
+        if (selectDate !== 'custom' || !date) {
             return selectDate
         }
         else {
@@ -81,23 +92,8 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
                     </DialogHeader>
                     <Calendar
                         mode="range"
-                        selected={customDateRange}
-                        onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined) => {
-                            if (range !== undefined) {
-                                if (range.from !== undefined && range.to === undefined) {
-                                    setCustomDateRange({ from: range.from, to: undefined });
-                                    setDate({ from: range.from, to: undefined })
-                                }
-                                if (range.from !== undefined && range.to !== undefined) {
-                                    setCustomDateRange(range as any);
-                                    setDate({ from: range.from, to: range.to })
-                                    setIsCalendarOpen(false)
-                                }
-                            }
-                            else {
-                                setCustomDateRange(undefined)
-                            }
-                        }}
+                        selected={date}
+                        onSelect={handleOnSelectRange}
                         numberOfMonths={2}
                         className="rounded-md border"
                     />
