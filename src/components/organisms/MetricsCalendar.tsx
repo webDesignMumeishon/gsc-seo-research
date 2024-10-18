@@ -17,7 +17,7 @@ type Props = {
     setDate: React.Dispatch<React.SetStateAction<DateRange>>
 }
 
-type SelectDate = '7d' | '30d' | '90d' | 'custom'
+type SelectDate = '7d' | '30d' | '90d' | '120d' | 'custom'
 
 
 const MetricsCalendar = ({ date, setDate }: Props) => {
@@ -36,6 +36,10 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
         }
         else if (value === '90d') {
             const range = DateService.getDaysRange(90)
+            setDate(range)
+        }
+        else if (value === '120d') {
+            const range = DateService.getDaysRange(120)
             setDate(range)
         }
         else if (value === 'custom') {
@@ -81,6 +85,7 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
                     <SelectItem value="7d">Last 7 days</SelectItem>
                     <SelectItem value="30d">Last 30 days</SelectItem>
                     <SelectItem value="90d">Last 90 days</SelectItem>
+                    <SelectItem value="120d">Last 120 days</SelectItem>
                     <SelectItem value="custom">Custom date range</SelectItem>
                 </SelectContent>
             </Select>
