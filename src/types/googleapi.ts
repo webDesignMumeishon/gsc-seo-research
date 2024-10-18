@@ -9,6 +9,10 @@ export type PageMetrics = GoogleMetrics & {
     page: string
 }
 
+export type QueryMetrics = GoogleMetrics & {
+    query: string
+}
+
 export type DateMetrics = GoogleDataRow & {
     date: string
 }

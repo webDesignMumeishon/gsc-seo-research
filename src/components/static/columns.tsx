@@ -73,7 +73,7 @@ export const columns: ColumnDef<PageMetrics>[] = [
 
 export const queryColumns: ColumnDef<PageMetrics>[] = [
     {
-        accessorKey: "page",
+        accessorKey: "query",
         header: () => <div>Query</div>,
     },
     {
