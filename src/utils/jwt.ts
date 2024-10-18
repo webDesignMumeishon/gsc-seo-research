@@ -1,4 +1,3 @@
-import { Token } from "@prisma/client";
 import jwt from 'jsonwebtoken'
 
 export function decodeTokenId(tokenId: string): string {

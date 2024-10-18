@@ -1,12 +1,9 @@
 "use client"
 import { useState, useCallback, useMemo, useEffect } from "react"
-import { TrendingUp } from "lucide-react"
 import moment from "moment"
 import {
-    Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -70,9 +67,9 @@ export default function DomainDashboard({ url }: Props) {
 
     const handleNoteSave = useCallback(() => {
         if (selectedPoint) {
-            const newChartData = dateData.map(item =>
-                item.date === (selectedPoint as any).date ? { ...item, note: currentNote } : item
-            )
+            // const newChartData = dateData.map(item =>
+            //     item.date === (selectedPoint as any).date ? { ...item, note: currentNote } : item
+            // )
             // setChartData(newChartData)
             setIsDialogOpen(false)
         }

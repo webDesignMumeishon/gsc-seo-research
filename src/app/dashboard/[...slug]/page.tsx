@@ -1,8 +1,4 @@
-// app/dashboard/[...slug]/page.tsx
-
-import { GetPagesMetrics, GetDateMetrics } from "@/app/actions/google";
 import DomainDashboard from "@/components/DomainDashboard";
-import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 interface DashboardPageProps {

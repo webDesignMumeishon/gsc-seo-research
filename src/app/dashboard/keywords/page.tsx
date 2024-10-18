@@ -23,9 +23,12 @@ const Page = () => {
     useEffect(() => {
         const fetch = async (page: string) => {
             setLocalLoading(true)
-            const result = await cachedGetPagesList(userIdClerk, page, selectedSite?.url!);
-            setpagesData(result)
-            setLocalLoading(false)
+            if (selectedSite !== null) {
+                const result = await cachedGetPagesList(userIdClerk, page, selectedSite.url!);
+                setpagesData(result)
+                setLocalLoading(false)
+            }
+
         }
 
         if (selectedSite !== null && selectedSite !== undefined) {

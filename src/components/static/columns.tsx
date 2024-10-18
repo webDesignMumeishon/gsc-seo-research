@@ -21,25 +21,25 @@ export const columns: ColumnDef<PageMetrics>[] = [
     {
         accessorKey: "impressions",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-impressions">Impressions</p>} />
+            return <PageTHeaderColumn<PageMetrics> column={column} metric={<p className="text-impressions">Impressions</p>} />
         }
     },
     {
         accessorKey: "clicks",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-clicks">Clicks</p>} />
+            return <PageTHeaderColumn<PageMetrics> column={column} metric={<p className="text-clicks">Clicks</p>} />
         }
     },
     {
         accessorKey: "ctr",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-ctr">CTR</p>} />
+            return <PageTHeaderColumn<PageMetrics> column={column} metric={<p className="text-ctr">CTR</p>} />
         }
     },
     {
         accessorKey: "position",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-position">Position</p>} />
+            return <PageTHeaderColumn<PageMetrics> column={column} metric={<p className="text-position">Position</p>} />
         }
     },
     {
@@ -79,25 +79,25 @@ export const queryColumns: ColumnDef<QueryMetrics>[] = [
     {
         accessorKey: "impressions",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-impressions">Impressions</p>} />
+            return <PageTHeaderColumn<QueryMetrics> column={column} metric={<p className="text-impressions">Impressions</p>} />
         }
     },
     {
         accessorKey: "clicks",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-clicks">Clicks</p>} />
+            return <PageTHeaderColumn<QueryMetrics> column={column} metric={<p className="text-clicks">Clicks</p>} />
         }
     },
     {
         accessorKey: "ctr",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-ctr">CTR</p>} />
+            return <PageTHeaderColumn<QueryMetrics> column={column} metric={<p className="text-ctr">CTR</p>} />
         }
     },
     {
         accessorKey: "position",
         header: ({ column }) => {
-            return <PageTHeaderColumn column={column} metric={<p className="text-position">Position</p>} />
+            return <PageTHeaderColumn<QueryMetrics> column={column} metric={<p className="text-position">Position</p>} />
         }
     },
     {

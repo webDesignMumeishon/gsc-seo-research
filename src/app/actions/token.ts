@@ -1,7 +1,6 @@
 "use server"
 import prisma from "../../lib/prisma"
 import TokenService from '@/services/token';
-import jwt from 'jsonwebtoken'
 
 
 export async function GetUserToken(userId: string, siteUrl: string): Promise<{

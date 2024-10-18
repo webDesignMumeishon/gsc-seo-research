@@ -2,7 +2,6 @@
 
 import { google } from 'googleapis'
 import { revalidateTag } from 'next/cache';
-import { auth } from '@clerk/nextjs/server'
 
 import { oauth2Client } from '@/lib/oauth2-client';
 import { GetUserToken, GetUserTokenByTokenId } from './token';
@@ -82,14 +81,8 @@ export const GetQueriesMetrics = async (userId: string, siteUrl: string, startDa
     return gsc.getQueriesMetrics(siteUrl, startDate, endDate)
 }
 
-export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
-    const { userId } = auth()
-
-    if (userId === null) {
-        throw new Error('Missing userId')
-    }
-
-    const token = await GetUserToken(userId)
+export const GetQueriesByPage = async (userId: string, url: string, pageUrl: string, startDate: Date, endDate: Date) => {
+    const token = await GetUserToken(userId, url)
 
     const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
 
@@ -152,7 +145,7 @@ export const saveUserSites = async (subId: string, userId: string, sites: Site[]
 }
 
 export const GetQueries = async (userId: string, siteUrl: string): Promise<{ month: string; impressions: any; clicks: any }[]> => {
-    const token = await GetUserToken(userId)
+    const token = await GetUserToken(userId, siteUrl)
 
     oauth2Client.setCredentials({
         access_token: token?.access_token,

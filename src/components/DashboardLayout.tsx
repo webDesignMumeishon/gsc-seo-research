@@ -1,10 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { redirect } from 'next/navigation';
-import { currentUser } from '@clerk/nextjs/server'
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-
-import { SiteProvider } from '@/context/SiteContext';
 import Sidebar from '@/components/Sidebar';
 
 type Props = {

@@ -1,9 +1,8 @@
 import { oauth2Client } from '@/lib/oauth2-client';
 import { DateMetrics, GoogleDataRow } from '@/types/googleapi';
-import DateService, { YYYYMMDD } from '@/utils/dateService';
+import DateService from '@/utils/dateService';
 import { OAuth2Client } from 'google-auth-library';
 import { google, webmasters_v3 } from 'googleapis'
-import moment from 'moment';
 
 
 class GoogleSearchConsoleService {
@@ -26,12 +25,12 @@ class GoogleSearchConsoleService {
         return this.oauth2Client
     }
 
-    public async getQueriesByPage(url: string, pageUrl: string, startDate: YYYYMMDD, endDate: YYYYMMDD) {
+    public async getQueriesByPage(url: string, pageUrl: string, startDate: Date, endDate: Date) {
         const response = await this.webmasters.searchanalytics.query({
             siteUrl: url,
             requestBody: {
-                startDate,
-                endDate,
+                startDate: DateService.formatDateYYYYMMDD(startDate),
+                endDate: DateService.formatDateYYYYMMDD(endDate),
                 dimensions: ['query', 'page'],
                 dimensionFilterGroups: [
                     {
@@ -67,7 +66,7 @@ class GoogleSearchConsoleService {
 
         const result = response.data.rows?.map(page => {
             return {
-                page: page.keys?.[0]!,
+                page: page.keys?.[0] || 'unavailable',
                 position: Math.round(page.position!),
                 clicks: page.clicks!,
                 ctr: Math.round(page.ctr! * 100),
@@ -97,7 +96,7 @@ class GoogleSearchConsoleService {
 
         const result = response.data.rows?.map(query => {
             return {
-                query: query.keys?.[0]!,
+                query: query.keys?.[0] || 'unavailable',
                 position: Math.round(query.position!),
                 clicks: query.clicks!,
                 ctr: Math.round(query.ctr! * 100),

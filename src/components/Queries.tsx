@@ -17,6 +17,7 @@ import MetricSorting from '@/components/atoms/MetricSorting'
 import { Calendar } from "@/components/ui/calendar"
 import { GetQueriesByPage } from '@/app/actions/google'
 import EmptyQueries from './EmptyQueries'
+import { useSiteContext } from '@/context/SiteContext'
 
 const questionRegex = /^(how|why|what|when|where|who|which|can|does|do|is|are|was|will|should)\b/i
 
@@ -90,6 +91,8 @@ const PageQueries = ({
     pageUrl,
     handleBackClick,
 }: Props) => {
+    const { userIdClerk } = useSiteContext();
+
     const [queriesData, setQueriesData] = useState<any>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [minPosition, setMinPosition] = useState(1)
@@ -109,12 +112,12 @@ const PageQueries = ({
         const fetchData = async () => {
             setLoading(true)
             if (customDateRange?.from !== undefined && customDateRange?.to !== undefined) {
-                const result = await GetQueriesByPage(site, pageUrl, moment(customDateRange?.from).format('YYYY-MM-DD') as any, moment(customDateRange?.to).format('YYYY-MM-DD') as any)
+                const result = await GetQueriesByPage(userIdClerk, site, pageUrl, moment(customDateRange?.from).format('YYYY-MM-DD') as any, moment(customDateRange?.to).format('YYYY-MM-DD') as any)
                 setQueriesData(result)
             }
             else {
                 const { from, to } = DateService.getDaysRange(convertDateIntoNumber(dateRange))
-                const result = await GetQueriesByPage(site, pageUrl, from as any, to as any)
+                const result = await GetQueriesByPage(userIdClerk, site, pageUrl, from as any, to as any)
                 setQueriesData(result)
             }
             setLoading(false)

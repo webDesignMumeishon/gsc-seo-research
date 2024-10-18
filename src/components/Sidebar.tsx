@@ -24,10 +24,7 @@ type Props = {
 
 export default function Sidebar({ setMenu, menu }: Props) {
     const [activeItem, setActiveItem] = useState('Dashboard')
-
-    // const [sidebarOpen, setSidebarOpen] = useState(false)
     const sidebarRef = useRef<HTMLDivElement>(null)
-    const toggleButtonRef = useRef<HTMLButtonElement>(null)
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
