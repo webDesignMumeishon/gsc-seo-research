@@ -86,7 +86,7 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
             </Select>
 
             <Dialog open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="w-full">
                     <DialogHeader>
                         <DialogTitle>Select Custom Date Range</DialogTitle>
                     </DialogHeader>
@@ -95,7 +95,7 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
                         selected={date}
                         onSelect={handleOnSelectRange}
                         numberOfMonths={2}
-                        className="rounded-md border"
+                        className="rounded-md border p-0"
                     />
                     <div className="flex justify-end">
                         <Button onClick={() => setIsCalendarOpen(false)}>
