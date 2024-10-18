@@ -9,12 +9,12 @@ export type PageMetrics = GoogleMetrics & {
     page: string
 }
 
-export type GoogleDataRow = GoogleMetrics & {
-    keys?: string[];
-}
-
 export type DateMetrics = GoogleDataRow & {
     date: string
+}
+
+export type GoogleDataRow = GoogleMetrics & {
+    keys?: string[];
 }
 
 export type DateKeyDataRow = {

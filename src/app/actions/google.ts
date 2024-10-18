@@ -67,68 +67,14 @@ export const PagesQueryCount = async (userId: string, page: string, siteUrl: str
 
 export const GetDateMetrics = async (userId: string, siteUrl: string, startDate: Date, endDate: Date): Promise<DateMetrics[]> => {
     const token = await GetUserToken(userId, siteUrl)
-
-    oauth2Client.setCredentials({
-        access_token: token?.access_token,
-        refresh_token: token?.refresh_token,
-    })
-
-
-    const webmasters = google.webmasters({
-        version: 'v3',
-        auth: oauth2Client,
-    });
-
-    const response = await webmasters.searchanalytics.query({
-        siteUrl,
-        requestBody: {
-            startDate: DateService.formatDateYYYYMMDD(startDate),
-            endDate: DateService.formatDateYYYYMMDD(endDate),
-            dimensions: ['date'],
-            rowLimit,
-            dimensionFilterGroups: [],
-        },
-    });
-
-    try {
-        const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc, curr) => {
-            const dayKey = curr?.keys?.[0] as string
-            const clicks = curr.clicks || 0
-            const ctr = (curr.ctr! * 100) || 0
-            const impressions = curr.impressions || 0
-            const position = curr.position || 0
-
-            if (!acc[dayKey]) {
-                acc[dayKey] = {
-                    clicks,
-                    ctr,
-                    impressions,
-                    position,
-                }
-            }
-
-            return acc
-        }, {})
-
-        if (result === undefined) {
-            return []
-        }
-        else {
-            return Object.keys(result).map(row => ({ date: row, ...result[row] }))
-        }
-    } catch (error) {
-        console.log(error)
-        return []
-    }
-
-
-
+    const gsc = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
+    return gsc.getDatesMetrics(siteUrl, startDate, endDate)
 }
 
 export const GetPagesMetrics = async (userId: string, siteUrl: string, startDate: Date, endDate: Date) => {
     const token = await GetUserToken(userId, siteUrl)
-    const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
-    return console.getPagesMetrics(siteUrl, startDate, endDate)
+    const gsc = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
+    return gsc.getPagesMetrics(siteUrl, startDate, endDate)
 }
 
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
