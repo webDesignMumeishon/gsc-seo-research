@@ -42,7 +42,7 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
             const range = DateService.getDaysRange(90)
             setDate(range)
         }
-        if (value === 'custom') {
+        else if (value === 'custom') {
             setIsCalendarOpen(true)
             setCustomDateRange(undefined)
         }
@@ -85,10 +85,10 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
                         onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined) => {
                             if (range !== undefined) {
                                 if (range.from !== undefined && range.to === undefined) {
-                                    setCustomDateRange({ from: range.from, to: undefined });
+                                    setDate({ from: range.from, to: undefined });
                                 }
                                 if (range.from !== undefined && range.to !== undefined) {
-                                    setCustomDateRange(range as any);
+                                    setDate(range as any);
                                     setIsCalendarOpen(false)
                                 }
                             }
