@@ -1,9 +1,9 @@
 import { oauth2Client } from '@/lib/oauth2-client';
+import DateService, { YYYYMMDD } from '@/utils/dateService';
 import { OAuth2Client } from 'google-auth-library';
 import { google, webmasters_v3 } from 'googleapis'
 import moment from 'moment';
 
-export type YYYYMMDD = `${string}-${string}-${string}`;
 
 class GoogleSearchConsoleService {
     private oauth2Client: OAuth2Client = oauth2Client
@@ -51,13 +51,12 @@ class GoogleSearchConsoleService {
         return queries
     }
 
-    public async getPagesMetrics(url: string, startDate: YYYYMMDD, endDate: YYYYMMDD) {
-
+    public async getPagesMetrics(url: string, startDate: Date, endDate: Date) {
         const response = await this.webmasters.searchanalytics.query({
             siteUrl: url,
             requestBody: {
-                startDate: moment(startDate).format('YYYY-MM-DD'),
-                endDate: moment(endDate).format('YYYY-MM-DD'),
+                startDate: DateService.formatDateYYYYMMDD(startDate),
+                endDate: DateService.formatDateYYYYMMDD(endDate),
                 rowLimit: 5000,
                 dimensionFilterGroups: [],
                 dimensions: ['page'],
@@ -81,30 +80,6 @@ class GoogleSearchConsoleService {
             return []
         }
     }
-
-    // public async getSites(userId: number) {
-    //     try {
-    //         const webmasters = this.getWebmastersClient();
-    //         const response = await webmasters.sites.list();
-    //         const sites = response.data.siteEntry || [];
-
-    //         // Get sites already saved in the database
-    //         const dbSites = await SiteService.getUserSites(userId);
-    //         const urlsInDb = new Set(dbSites.map(item => item.url));
-
-    //         // Filter out sites that are already in the database
-    //         const filteredSites = sites.filter(site => !urlsInDb.has(site.siteUrl));
-
-    //         return filteredSites.map((site, id) => ({
-    //             id: id,
-    //             url: site.siteUrl || '',
-    //             permission: site.permissionLevel || ''
-    //         }));
-    //     } catch (error) {
-    //         console.error(error);
-    //         return [];
-    //     }
-    // }
 }
 
 export default GoogleSearchConsoleService

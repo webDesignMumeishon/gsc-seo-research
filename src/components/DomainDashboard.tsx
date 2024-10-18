@@ -52,7 +52,7 @@ export default function DomainDashboard({ chartData, url }: Props) {
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
-    const [dateRange, setDateRange] = useState<DateRange>({ from: moment().toDate(), to: moment().subtract(30, 'days').toDate() })
+    const [dateRange, setDateRange] = useState<DateRange>({ from: moment().subtract(30, 'days').toDate(), to: moment().toDate() })
     const [pageData, setPageData] = useState<PageMetrics[]>([])
 
     const displayData = useMemo(

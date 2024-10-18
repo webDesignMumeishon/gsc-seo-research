@@ -38,6 +38,10 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
             const range = DateService.getDaysRange(7)
             setDate(range)
         }
+        else if (value === '90d') {
+            const range = DateService.getDaysRange(90)
+            setDate(range)
+        }
         if (value === 'custom') {
             setIsCalendarOpen(true)
             setCustomDateRange(undefined)

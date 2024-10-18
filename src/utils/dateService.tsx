@@ -1,5 +1,7 @@
 import moment from "moment";
 
+export type YYYYMMDD = `${string}-${string}-${string}`;
+
 class DateService {
     static getDaysRange(days: number) {
         const today = moment();
@@ -8,6 +10,10 @@ class DateService {
             from: pastDate.toDate(),
             to: today.toDate(),
         };
+    }
+
+    static formatDateYYYYMMDD(date: Date) {
+        return moment(date).format('YYYY-MM-DD') as YYYYMMDD;
     }
 }
 
