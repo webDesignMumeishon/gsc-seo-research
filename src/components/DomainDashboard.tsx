@@ -1,9 +1,7 @@
 "use client"
-
 import { useState, useCallback, useMemo, useEffect } from "react"
 import { TrendingUp, XIcon } from "lucide-react"
-import { ResponsiveContainer } from "recharts"
-
+import moment from "moment"
 import {
     CardContent,
     CardDescription,
@@ -28,15 +26,12 @@ import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { CategoricalChartState } from "recharts/types/chart/types"
 import { GraphMetrics, PageMetrics } from "@/types/googleapi"
-import { columns } from "@/static/columns"
+import { columns } from "@/components/static/columns"
 import { DataTable } from "./PagesTable"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DateRange } from "react-day-picker"
-import { Calendar } from "@/components/ui/calendar"
 import MetricsCalendar from "./organisms/MetricsCalendar"
 import { GetPagesMetrics } from "@/app/actions/google"
 import { useSiteContext } from "@/context/SiteContext"
-import moment from "moment"
 
 
 type Props = {
