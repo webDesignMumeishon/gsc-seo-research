@@ -165,7 +165,7 @@ export default function DomainDashboard({ url }: Props) {
                 </div>
             </CardFooter> */}
 
-            <div className="flex gap-2 justify-between bg-inherit items-start">
+            <div className="flex gap-6 justify-between bg-inherit items-start">
                 <DataTable columns={columns} data={pageData} />
                 <DataTable columns={queryColumns} data={queryData} />
             </div>

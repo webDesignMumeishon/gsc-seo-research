@@ -17,9 +17,13 @@ const sidebarItems = [
     { name: 'Indexing', icon: SearchIcon, href: 'dashboard/indexing' },
 ]
 
-export default function Sidebar() {
+type Props = {
+    setMenu: React.Dispatch<React.SetStateAction<boolean>>,
+    menu: boolean
+}
+
+export default function Sidebar({ setMenu, menu }: Props) {
     const [activeItem, setActiveItem] = useState('Dashboard')
-    const [menu, setMenu] = useState(false)
 
     // const [sidebarOpen, setSidebarOpen] = useState(false)
     const sidebarRef = useRef<HTMLDivElement>(null)
@@ -27,11 +31,10 @@ export default function Sidebar() {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+            console.log('handleClickOutside', sidebarRef)
             if (
                 sidebarRef.current &&
-                !sidebarRef.current.contains(event.target as Node) &&
-                toggleButtonRef.current &&
-                !toggleButtonRef.current.contains(event.target as Node)
+                !sidebarRef.current.contains(event.target as Node)
             ) {
                 setMenu(false)
             }
@@ -53,7 +56,7 @@ export default function Sidebar() {
     }
 
     return (
-        <div className='absolute bg-white' style={{ zIndex: '1000' }}>
+        <div className='absolute bg-white' style={{ zIndex: '1000' }} ref={sidebarRef} aria-hidden="true">
             <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
                 <div className="p-2 flex align-middle items-center">
                     <h2 className="text-md font-semibold tracking-tight">

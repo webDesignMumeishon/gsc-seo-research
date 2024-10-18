@@ -5,6 +5,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 import { SiteProvider } from '@/context/SiteContext';
 import Sidebar from '@/components/Sidebar';
+import DashboardLayoutWrapper from '@/components/DashboardLayout';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode, params: any }) {
     const user = await currentUser()
@@ -15,26 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     return (
         <SiteProvider>
-            <div className='flex min-h-10 bg-gray-100'>
-                <Sidebar />
-
-                <div className='ml-auto p-2'>
-                    <SignedOut>
-                        <SignInButton />
-                    </SignedOut>
-                    <SignedIn>
-                        <UserButton />
-                    </SignedIn>
-                </div>
-
-            </div>
-            <div className="flex min-h-screen bg-gray-100">
-                <div className='flex flex-col w-full'>
-                    <div className='px-6'>
-                        {children}
-                    </div>
-                </div>
-            </div>
+            <DashboardLayoutWrapper children={children} />
         </SiteProvider>
     );
 }
