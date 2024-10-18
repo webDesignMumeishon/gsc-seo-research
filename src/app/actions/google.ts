@@ -77,6 +77,12 @@ export const GetPagesMetrics = async (userId: string, siteUrl: string, startDate
     return gsc.getPagesMetrics(siteUrl, startDate, endDate)
 }
 
+export const GetQueriesMetrics = async (userId: string, siteUrl: string, startDate: Date, endDate: Date) => {
+    const token = await GetUserToken(userId, siteUrl)
+    const gsc = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
+    return gsc.getQueriesMetrics(siteUrl, startDate, endDate)
+}
+
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
     const { userId } = auth()
 

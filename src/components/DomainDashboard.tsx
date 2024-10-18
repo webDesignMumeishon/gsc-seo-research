@@ -26,12 +26,12 @@ import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { CategoricalChartState } from "recharts/types/chart/types"
-import { DateMetrics, PageMetrics } from "@/types/googleapi"
+import { DateMetrics, PageMetrics, QueryMetrics } from "@/types/googleapi"
 import { columns, queryColumns } from "@/components/static/columns"
 import { DataTable } from "./PagesTable"
 import { DateRange } from "react-day-picker"
 import MetricsCalendar from "./organisms/MetricsCalendar"
-import { GetDateMetrics, GetPagesMetrics } from "@/app/actions/google"
+import { GetDateMetrics, GetPagesMetrics, GetQueriesMetrics } from "@/app/actions/google"
 import { useSiteContext } from "@/context/SiteContext"
 
 
@@ -45,6 +45,7 @@ export default function DomainDashboard({ url }: Props) {
 
     const [pageData, setPageData] = useState<PageMetrics[]>([])
     const [dateData, setDateData] = useState<DateMetrics[]>([])
+    const [queryData, setQueryData] = useState<QueryMetrics[]>([])
 
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
@@ -105,12 +106,14 @@ export default function DomainDashboard({ url }: Props) {
 
     useEffect(() => {
         const fetchData = async (startDate: Date, endDate: Date) => {
-            const [pageData, dateData] = await Promise.all([
+            const [pageData, dateData, queryData] = await Promise.all([
                 GetPagesMetrics(userIdClerk, url, startDate, endDate),
-                GetDateMetrics(userIdClerk, url, startDate, endDate)
+                GetDateMetrics(userIdClerk, url, startDate, endDate),
+                GetQueriesMetrics(userIdClerk, url, startDate, endDate)
             ])
             setPageData(pageData)
             setDateData(dateData)
+            setQueryData(queryData)
         }
 
         if (dateRange.from !== undefined && dateRange.to !== undefined) {
@@ -164,7 +167,7 @@ export default function DomainDashboard({ url }: Props) {
 
             <div className="flex gap-2 justify-between bg-inherit items-start">
                 <DataTable columns={columns} data={pageData} />
-                <DataTable columns={queryColumns} data={[]} />
+                <DataTable columns={queryColumns} data={queryData} />
             </div>
 
 

@@ -1,5 +1,5 @@
 import PageTHeaderColumn from "@/components/atoms/PageTHeaderColumn"
-import { PageMetrics } from "@/types/googleapi"
+import { PageMetrics, QueryMetrics } from "@/types/googleapi"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -71,7 +71,7 @@ export const columns: ColumnDef<PageMetrics>[] = [
     },
 ]
 
-export const queryColumns: ColumnDef<PageMetrics>[] = [
+export const queryColumns: ColumnDef<QueryMetrics>[] = [
     {
         accessorKey: "query",
         header: () => <div>Query</div>,

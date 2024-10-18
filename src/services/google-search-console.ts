@@ -82,6 +82,36 @@ class GoogleSearchConsoleService {
         }
     }
 
+    public async getQueriesMetrics(url: string, startDate: Date, endDate: Date) {
+        const response = await this.webmasters.searchanalytics.query({
+            siteUrl: url,
+            requestBody: {
+                startDate: DateService.formatDateYYYYMMDD(startDate),
+                endDate: DateService.formatDateYYYYMMDD(endDate),
+                rowLimit: 5000,
+                dimensionFilterGroups: [],
+                dimensions: ['query'],
+                aggregationType: 'auto'
+            },
+        });
+
+        const result = response.data.rows?.map(query => {
+            return {
+                query: query.keys?.[0]!,
+                position: Math.round(query.position!),
+                clicks: query.clicks!,
+                ctr: Math.round(query.ctr! * 100),
+                impressions: query.impressions!
+            }
+        })
+        if (result !== undefined) {
+            return result!
+        }
+        else {
+            return []
+        }
+    }
+
     public async getDatesMetrics(siteUrl: string, startDate: Date, endDate: Date): Promise<DateMetrics[]> {
         const response = await this.webmasters.searchanalytics.query({
             siteUrl,
