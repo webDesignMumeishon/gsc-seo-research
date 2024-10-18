@@ -10,9 +10,8 @@ import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
-import { DateMetrics, GoogleDataRow } from '@/types/googleapi';
+import { DateMetrics } from '@/types/googleapi';
 import prisma from '@/lib/prisma';
-import DateService from '@/utils/dateService';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';

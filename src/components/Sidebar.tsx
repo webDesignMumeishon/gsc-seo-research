@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { BarChart2, ClipboardListIcon, SearchIcon, ServerIcon, } from 'lucide-react'
 
@@ -20,6 +20,28 @@ const sidebarItems = [
 export default function Sidebar() {
     const [activeItem, setActiveItem] = useState('Dashboard')
     const [menu, setMenu] = useState(false)
+
+    // const [sidebarOpen, setSidebarOpen] = useState(false)
+    const sidebarRef = useRef<HTMLDivElement>(null)
+    const toggleButtonRef = useRef<HTMLButtonElement>(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target as Node) &&
+                toggleButtonRef.current &&
+                !toggleButtonRef.current.contains(event.target as Node)
+            ) {
+                setMenu(false)
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
 
 
     if (!menu) {
