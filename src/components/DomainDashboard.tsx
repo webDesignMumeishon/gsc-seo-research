@@ -33,10 +33,11 @@ import { DataTable } from "./PagesTable"
 
 type Props = {
     chartData: GraphMetrics[]
+    pageData: any[]
 }
 
 
-export default function DomainDashboard({ chartData }: Props) {
+export default function DomainDashboard({ chartData, pageData }: Props) {
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -132,92 +133,7 @@ export default function DomainDashboard({ chartData }: Props) {
                 </div>
             </CardFooter>
 
-            <DataTable columns={columns} data={[
-                {
-                    "page": "190cee9",
-                    "impressions": 459,
-                    "clicks": 5788,
-                    "ctr": 0.55,
-                    "position": 5370
-                },
-                {
-                    "page": "1951d3e",
-                    "impressions": 176,
-                    "clicks": 8497,
-                    "ctr": 8.45,
-                    "position": 5369
-                },
-                {
-                    "page": "4d3937b",
-                    "impressions": 500,
-                    "clicks": 7839,
-                    "ctr": 3.07,
-                    "position": 3635
-                },
-                {
-                    "page": "5cb31fb",
-                    "impressions": 272,
-                    "clicks": 6522,
-                    "ctr": 8.67,
-                    "position": 4026
-                },
-                {
-                    "page": "32a9b65",
-                    "impressions": 150,
-                    "clicks": 4209,
-                    "ctr": 8.93,
-                    "position": 243
-                },
-                {
-                    "page": "3ae3a6d",
-                    "impressions": 209,
-                    "clicks": 5196,
-                    "ctr": 2.2,
-                    "position": 6733
-                },
-                {
-                    "page": "327173e",
-                    "impressions": 774,
-                    "clicks": 7548,
-                    "ctr": 8.89,
-                    "position": 9895
-                },
-                {
-                    "page": "347ba67",
-                    "impressions": 882,
-                    "clicks": 1492,
-                    "ctr": 8.5,
-                    "position": 9792
-                },
-                {
-                    "page": "4910e0a",
-                    "impressions": 235,
-                    "clicks": 3010,
-                    "ctr": 8.68,
-                    "position": 523
-                },
-                {
-                    "page": "c6762c",
-                    "impressions": 693,
-                    "clicks": 9605,
-                    "ctr": 1.47,
-                    "position": 1258
-                },
-                {
-                    "page": "42eab23",
-                    "impressions": 330,
-                    "clicks": 1990,
-                    "ctr": 3.75,
-                    "position": 3805
-                },
-                {
-                    "page": "26fbe92",
-                    "impressions": 164,
-                    "clicks": 3130,
-                    "ctr": 4.31,
-                    "position": 2909
-                }
-            ]} />
+            <DataTable columns={columns} data={pageData} />
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>

@@ -124,6 +124,14 @@ export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<G
 
 }
 
+export const GetPagesMetrics = async (userId: string, siteUrl: string) => {
+    const token = await GetUserToken(userId, siteUrl)
+
+    const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
+
+    return console.getPagesMetrics(siteUrl, new Date(startDate), new Date(endDate))
+}
+
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
     const { userId } = auth()
 
@@ -156,7 +164,7 @@ export const GetSitesGoogle = async (subId: string, userId: string): Promise<Sit
             version: 'v3',
             auth: oauth2Client,
         });
-        
+
         const response = await webmasters.sites.list();
         const sites = response.data.siteEntry;
 
@@ -178,6 +186,7 @@ export const GetSitesGoogle = async (subId: string, userId: string): Promise<Sit
         return []
     }
 }
+
 export const saveUserSites = async (subId: string, userId: string, sites: Site[]) => {
     const token = await GetUserTokenByTokenId(subId)
 

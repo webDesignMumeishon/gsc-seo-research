@@ -4,7 +4,14 @@ import TokenService from '@/services/token';
 import jwt from 'jsonwebtoken'
 
 
-export async function GetUserToken(userId: string, siteUrl: string) {
+export async function GetUserToken(userId: string, siteUrl: string): Promise<{
+    id: number;
+    subId: string;
+    expiry_date: Date;
+    access_token: string;
+    refresh_token: string;
+    userId: string;
+}> {
     const site = await prisma.site.findFirst({
         where: {
             userId,

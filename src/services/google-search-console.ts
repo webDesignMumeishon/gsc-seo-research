@@ -1,6 +1,9 @@
 import { oauth2Client } from '@/lib/oauth2-client';
 import { OAuth2Client } from 'google-auth-library';
 import { google, webmasters_v3 } from 'googleapis'
+import moment from 'moment';
+
+type YYYYMMDD = `${number}-${number}-${number}`;
 
 class GoogleSearchConsoleService {
     private oauth2Client: OAuth2Client = oauth2Client
@@ -22,8 +25,7 @@ class GoogleSearchConsoleService {
         return this.oauth2Client
     }
 
-
-    public async getQueriesByPage(url: string, pageUrl: string, startDate: Date, endDate: Date) {
+    public async getQueriesByPage(url: string, pageUrl: string, startDate: YYYYMMDD, endDate: YYYYMMDD) {
         const response = await this.webmasters.searchanalytics.query({
             siteUrl: url,
             requestBody: {
@@ -47,6 +49,37 @@ class GoogleSearchConsoleService {
 
         const queries = response.data.rows || [];
         return queries
+    }
+
+    public async getPagesMetrics(url: string, startDate: Date, endDate: Date) {
+
+        const response = await this.webmasters.searchanalytics.query({
+            siteUrl: url,
+            requestBody: {
+                startDate: moment(startDate).format('YYYY-MM-DD'),
+                endDate: moment(endDate).format('YYYY-MM-DD'),
+                rowLimit: 5000,
+                dimensionFilterGroups: [],
+                dimensions: ['page'],
+                aggregationType: 'auto'
+            },
+        });
+
+        const result = response.data.rows?.map(page => {
+            return {
+                page: page.keys?.[0]!,
+                position: Math.round(page.position!),
+                clicks: page.clicks!,
+                ctr: Math.round(page.ctr! * 100),
+                impressions: page.impressions!
+            }
+        })
+        if (result !== undefined) {
+            return result!
+        }
+        else {
+            return []
+        }
     }
 
     // public async getSites(userId: number) {

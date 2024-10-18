@@ -1,6 +1,6 @@
 // app/dashboard/[...slug]/page.tsx
 
-import { GetSiteMetrics } from "@/app/actions/google";
+import { GetPagesMetrics, GetSiteMetrics } from "@/app/actions/google";
 import DomainDashboard from "@/components/DomainDashboard";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -24,9 +24,10 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
     }
 
     const data = await GetSiteMetrics(user.userId, decodedSlug[0])
+    const pageData = await GetPagesMetrics(user.userId, decodedSlug[0])
 
     return (
-        <DomainDashboard chartData={data} />
+        <DomainDashboard chartData={data} pageData={pageData} />
     );
 };
 
