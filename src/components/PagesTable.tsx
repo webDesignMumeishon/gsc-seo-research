@@ -44,11 +44,11 @@ export function DataTable<TData, TValue>({ columns, data, }: DataTableProps<TDat
     })
 
     return (
-        <div className="rounded-md border">
+        <div className="rounded-md bg-slate-50 p-2">
             <Table>
-                <TableHeader className="">
+                <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id} className="border-none">
                             {headerGroup.headers.map((header) => {
                                 return (
                                     <TableHead key={header.id}>
@@ -64,12 +64,13 @@ export function DataTable<TData, TValue>({ columns, data, }: DataTableProps<TDat
                         </TableRow>
                     ))}
                 </TableHeader>
-                <TableBody>
+                <TableBody className="border-none">
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
+                                className="border-none"
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>

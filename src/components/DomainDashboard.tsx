@@ -119,7 +119,7 @@ export default function DomainDashboard({ url }: Props) {
     }, [dateRange])
 
     return (
-        <div className="w-full">
+        <div className="w-ful">
 
             <MetricsCalendar date={dateRange} setDate={setDateRange} />
 
@@ -148,7 +148,7 @@ export default function DomainDashboard({ url }: Props) {
                 />
             </CardContent>
 
-            <CardFooter>
+            {/* <CardFooter>
                 <div className="flex w-full items-start gap-2 text-sm">
                     <div className="grid gap-2">
                         <div className="flex items-center gap-2 font-medium leading-none">
@@ -159,7 +159,7 @@ export default function DomainDashboard({ url }: Props) {
                         </div>
                     </div>
                 </div>
-            </CardFooter>
+            </CardFooter> */}
 
             <DataTable columns={columns} data={pageData} />
 
