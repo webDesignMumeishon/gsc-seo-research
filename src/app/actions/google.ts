@@ -10,8 +10,9 @@ import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
 import GoogleSearchConsoleService from '@/services/google-search-console';
-import { GraphMetrics, GoogleDataRow } from '@/types/googleapi';
+import { DateMetrics, GoogleDataRow } from '@/types/googleapi';
 import prisma from '@/lib/prisma';
+import DateService from '@/utils/dateService';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -64,7 +65,7 @@ export const PagesQueryCount = async (userId: string, page: string, siteUrl: str
     return result
 }
 
-export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<GraphMetrics[]> => {
+export const GetDateMetrics = async (userId: string, siteUrl: string, startDate: Date, endDate: Date): Promise<DateMetrics[]> => {
     const token = await GetUserToken(userId, siteUrl)
 
     oauth2Client.setCredentials({
@@ -81,8 +82,8 @@ export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<G
     const response = await webmasters.searchanalytics.query({
         siteUrl,
         requestBody: {
-            startDate,
-            endDate,
+            startDate: DateService.formatDateYYYYMMDD(startDate),
+            endDate: DateService.formatDateYYYYMMDD(endDate),
             dimensions: ['date'],
             rowLimit,
             dimensionFilterGroups: [],

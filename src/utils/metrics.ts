@@ -1,7 +1,7 @@
-import { DateKeyDataRow, GraphMetrics } from "@/types/googleapi"
+import { DateKeyDataRow, DateMetrics } from "@/types/googleapi"
 import ISO8601 from "./ISO8601"
 
-export const aggregateMonthlyData = (dailyData: GraphMetrics[]) => {
+export const aggregateMonthlyData = (dailyData: DateMetrics[]) => {
 
     const monthlyData = dailyData.reduce<DateKeyDataRow>((acc, curr) => {
         const month = new ISO8601(curr.date).getYearMonth()

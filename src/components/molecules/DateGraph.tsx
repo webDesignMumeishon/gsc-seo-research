@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
-import { GraphMetrics } from "@/types/googleapi"
+import { DateMetrics } from "@/types/googleapi"
 import { Area, AreaChart, XAxis, Tooltip, ResponsiveContainer } from "recharts"
 
 type Props = {
-    displayData: GraphMetrics[]
+    displayData: DateMetrics[]
     handleDataPointClick: any
     tickFormatterCallback: any
     CustomTooltip: any

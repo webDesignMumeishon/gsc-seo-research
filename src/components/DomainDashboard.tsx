@@ -1,6 +1,6 @@
 "use client"
 import { useState, useCallback, useMemo, useEffect } from "react"
-import { TrendingUp, XIcon } from "lucide-react"
+import { TrendingUp } from "lucide-react"
 import moment from "moment"
 import {
     CardContent,
@@ -25,34 +25,36 @@ import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { CategoricalChartState } from "recharts/types/chart/types"
-import { GraphMetrics, PageMetrics } from "@/types/googleapi"
+import { DateMetrics, PageMetrics } from "@/types/googleapi"
 import { columns } from "@/components/static/columns"
 import { DataTable } from "./PagesTable"
 import { DateRange } from "react-day-picker"
 import MetricsCalendar from "./organisms/MetricsCalendar"
-import { GetPagesMetrics } from "@/app/actions/google"
+import { GetDateMetrics, GetPagesMetrics } from "@/app/actions/google"
 import { useSiteContext } from "@/context/SiteContext"
 
 
 type Props = {
-    chartData: GraphMetrics[]
     url: string
 }
 
 
-export default function DomainDashboard({ chartData, url }: Props) {
-    const { selectedSite, userIdClerk } = useSiteContext();
+export default function DomainDashboard({ url }: Props) {
+    const { userIdClerk } = useSiteContext();
+
+    const [pageData, setPageData] = useState<PageMetrics[]>([])
+    const [dateData, setDateData] = useState<DateMetrics[]>([])
 
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
     const [dateRange, setDateRange] = useState<DateRange>({ from: moment().subtract(30, 'days').toDate(), to: moment().toDate() })
-    const [pageData, setPageData] = useState<PageMetrics[]>([])
+
 
     const displayData = useMemo(
-        () => isMonthly ? aggregateMonthlyData(chartData) : chartData,
-        [chartData, isMonthly]
+        () => isMonthly ? aggregateMonthlyData(dateData) : dateData,
+        [dateData, isMonthly]
     )
 
     const handleDataPointClick = useCallback((data: CategoricalChartState) => {
@@ -66,13 +68,13 @@ export default function DomainDashboard({ chartData, url }: Props) {
 
     const handleNoteSave = useCallback(() => {
         if (selectedPoint) {
-            const newChartData = chartData.map(item =>
+            const newChartData = dateData.map(item =>
                 item.date === (selectedPoint as any).date ? { ...item, note: currentNote } : item
             )
             // setChartData(newChartData)
             setIsDialogOpen(false)
         }
-    }, [selectedPoint, currentNote, chartData])
+    }, [selectedPoint, currentNote])
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
@@ -102,9 +104,14 @@ export default function DomainDashboard({ chartData, url }: Props) {
 
     useEffect(() => {
         const fetchData = async (startDate: Date, endDate: Date) => {
-            const pageData = await GetPagesMetrics(userIdClerk, url, startDate, endDate)
+            const [pageData, dateData] = await Promise.all([
+                GetPagesMetrics(userIdClerk, url, startDate, endDate),
+                GetDateMetrics(userIdClerk, url, startDate, endDate)
+            ])
             setPageData(pageData)
+            setDateData(dateData)
         }
+
         if (dateRange.from !== undefined && dateRange.to !== undefined) {
             fetchData(dateRange.from, dateRange.to)
         }

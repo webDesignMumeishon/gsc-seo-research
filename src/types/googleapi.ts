@@ -13,7 +13,7 @@ export type GoogleDataRow = GoogleMetrics & {
     keys?: string[];
 }
 
-export type GraphMetrics = GoogleDataRow & {
+export type DateMetrics = GoogleDataRow & {
     date: string
 }
 

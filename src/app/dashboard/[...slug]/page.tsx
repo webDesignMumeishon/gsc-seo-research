@@ -1,6 +1,6 @@
 // app/dashboard/[...slug]/page.tsx
 
-import { GetPagesMetrics, GetSiteMetrics } from "@/app/actions/google";
+import { GetPagesMetrics, GetDateMetrics } from "@/app/actions/google";
 import DomainDashboard from "@/components/DomainDashboard";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -12,21 +12,14 @@ interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
-    const user = auth()
     const decodedSlug = params.slug.map((segment) => decodeURIComponent(segment));
-
-    if (user.userId === null) {
-        redirect('/')
-    }
 
     if (!decodedSlug) {
         redirect('/dashboard')
     }
 
-    const data = await GetSiteMetrics(user.userId, decodedSlug[0])
-
     return (
-        <DomainDashboard chartData={data} url={decodedSlug[0]} />
+        <DomainDashboard url={decodedSlug[0]} />
     );
 };
 
