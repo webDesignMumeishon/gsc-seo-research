@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
-import { TrendingUp } from "lucide-react"
+import { useState, useCallback, useMemo, useEffect } from "react"
+import { TrendingUp, XIcon } from "lucide-react"
 import { ResponsiveContainer } from "recharts"
 
 import {
@@ -27,21 +27,33 @@ import ISO8601 from "@/utils/ISO8601"
 import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { CategoricalChartState } from "recharts/types/chart/types"
-import { GraphMetrics } from "@/types/googleapi"
+import { GraphMetrics, PageMetrics } from "@/types/googleapi"
 import { columns } from "@/static/columns"
 import { DataTable } from "./PagesTable"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { DateRange } from "react-day-picker"
+import { Calendar } from "@/components/ui/calendar"
+import MetricsCalendar from "./organisms/MetricsCalendar"
+import { GetPagesMetrics } from "@/app/actions/google"
+import { useSiteContext } from "@/context/SiteContext"
+import moment from "moment"
+
 
 type Props = {
     chartData: GraphMetrics[]
-    pageData: any[]
+    url: string
 }
 
 
-export default function DomainDashboard({ chartData, pageData }: Props) {
+export default function DomainDashboard({ chartData, url }: Props) {
+    const { selectedSite, userIdClerk } = useSiteContext();
+
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
+    const [dateRange, setDateRange] = useState<DateRange>({ from: moment().toDate(), to: moment().subtract(30, 'days').toDate() })
+    const [pageData, setPageData] = useState<PageMetrics[]>([])
 
     const displayData = useMemo(
         () => isMonthly ? aggregateMonthlyData(chartData) : chartData,
@@ -93,8 +105,22 @@ export default function DomainDashboard({ chartData, pageData }: Props) {
         return date.getDay()
     }
 
+    useEffect(() => {
+        const fetchData = async (startDate: Date, endDate: Date) => {
+            const pageData = await GetPagesMetrics(userIdClerk, url, startDate, endDate)
+            setPageData(pageData)
+        }
+        if (dateRange.from !== undefined && dateRange.to !== undefined) {
+            fetchData(dateRange.from, dateRange.to)
+        }
+
+    }, [dateRange])
+
     return (
         <div className="w-full">
+
+            <MetricsCalendar date={dateRange} setDate={setDateRange} />
+
             <CardHeader>
                 <CardTitle>Area Chart - {isMonthly ? "Monthly" : "Daily"} Gradient with Notes</CardTitle>
                 <CardDescription>

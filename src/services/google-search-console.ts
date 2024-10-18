@@ -3,7 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { google, webmasters_v3 } from 'googleapis'
 import moment from 'moment';
 
-type YYYYMMDD = `${number}-${number}-${number}`;
+export type YYYYMMDD = `${string}-${string}-${string}`;
 
 class GoogleSearchConsoleService {
     private oauth2Client: OAuth2Client = oauth2Client
@@ -51,7 +51,7 @@ class GoogleSearchConsoleService {
         return queries
     }
 
-    public async getPagesMetrics(url: string, startDate: Date, endDate: Date) {
+    public async getPagesMetrics(url: string, startDate: YYYYMMDD, endDate: YYYYMMDD) {
 
         const response = await this.webmasters.searchanalytics.query({
             siteUrl: url,

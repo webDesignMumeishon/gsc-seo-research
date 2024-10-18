@@ -5,6 +5,10 @@ export type GoogleApiDataRaw = webmasters_v3.Schema$ApiDataRow
 
 export type GoogleMetrics = Required<Pick<GoogleApiDataRaw, 'clicks' | 'ctr' | 'position' | 'impressions'>>;
 
+export type PageMetrics = GoogleMetrics & {
+    page: string
+}
+
 export type GoogleDataRow = GoogleMetrics & {
     keys?: string[];
 }

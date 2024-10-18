@@ -1,5 +1,5 @@
 import PageTHeaderColumn from "@/components/atoms/PageTHeaderColumn"
-import { GoogleMetrics } from "@/types/googleapi"
+import { PageMetrics } from "@/types/googleapi"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,11 +13,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export type TableColumns = GoogleMetrics & {
-    page: string
-}
-
-export const columns: ColumnDef<TableColumns>[] = [
+export const columns: ColumnDef<PageMetrics>[] = [
     {
         accessorKey: "page",
         header: () => <div>Page</div>,

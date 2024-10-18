@@ -24,10 +24,9 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
     }
 
     const data = await GetSiteMetrics(user.userId, decodedSlug[0])
-    const pageData = await GetPagesMetrics(user.userId, decodedSlug[0])
 
     return (
-        <DomainDashboard chartData={data} pageData={pageData} />
+        <DomainDashboard chartData={data} url={decodedSlug[0]} />
     );
 };
 

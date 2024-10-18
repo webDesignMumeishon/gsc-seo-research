@@ -9,9 +9,10 @@ import { GetUserToken, GetUserTokenByTokenId } from './token';
 import SiteService from '@/services/sites';
 import { SITES_LIST_CACHE_TAG } from '@/utils';
 import { Site } from '@/types/site';
-import GoogleSearchConsoleService from '@/services/google-search-console';
+import GoogleSearchConsoleService, { YYYYMMDD } from '@/services/google-search-console';
 import { GraphMetrics, GoogleDataRow } from '@/types/googleapi';
 import prisma from '@/lib/prisma';
+import moment from 'moment';
 
 const startDate = '2024-06-01';
 const endDate = '2024-09-13';
@@ -124,12 +125,12 @@ export const GetSiteMetrics = async (userId: string, siteUrl: string): Promise<G
 
 }
 
-export const GetPagesMetrics = async (userId: string, siteUrl: string) => {
+export const GetPagesMetrics = async (userId: string, siteUrl: string, startDate: Date, endDate: Date) => {
     const token = await GetUserToken(userId, siteUrl)
 
     const console = new GoogleSearchConsoleService(token.access_token, token.refresh_token)
 
-    return console.getPagesMetrics(siteUrl, new Date(startDate), new Date(endDate))
+    return console.getPagesMetrics(siteUrl, moment(startDate).format('YYYY-MM-DD') as YYYYMMDD, moment(endDate).format('YYYY-MM-DD') as YYYYMMDD)
 }
 
 export const GetQueriesByPage = async (url: string, pageUrl: string, startDate: Date, endDate: Date) => {
