@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
     Dialog,
@@ -53,7 +53,7 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
             return selectDate
         }
         else {
-            const { from, to } = customDateRange
+            const { from, to } = date
             return `${from?.toLocaleDateString()} - ${to?.toLocaleDateString()}`
         }
     }
@@ -85,10 +85,12 @@ const MetricsCalendar = ({ date, setDate }: Props) => {
                         onSelect={(range: { from?: Date | undefined; to?: Date | undefined } | undefined) => {
                             if (range !== undefined) {
                                 if (range.from !== undefined && range.to === undefined) {
-                                    setDate({ from: range.from, to: undefined });
+                                    setCustomDateRange({ from: range.from, to: undefined });
+                                    setDate({ from: range.from, to: undefined })
                                 }
                                 if (range.from !== undefined && range.to !== undefined) {
-                                    setDate(range as any);
+                                    setCustomDateRange(range as any);
+                                    setDate({ from: range.from, to: range.to })
                                     setIsCalendarOpen(false)
                                 }
                             }
