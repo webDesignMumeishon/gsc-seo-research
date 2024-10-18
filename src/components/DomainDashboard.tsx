@@ -3,6 +3,7 @@ import { useState, useCallback, useMemo, useEffect } from "react"
 import { TrendingUp } from "lucide-react"
 import moment from "moment"
 import {
+    Card,
     CardContent,
     CardDescription,
     CardFooter,
@@ -26,7 +27,7 @@ import DateGraph from "./molecules/DateGraph"
 import { aggregateMonthlyData } from "@/utils/metrics"
 import { CategoricalChartState } from "recharts/types/chart/types"
 import { DateMetrics, PageMetrics } from "@/types/googleapi"
-import { columns } from "@/components/static/columns"
+import { columns, queryColumns } from "@/components/static/columns"
 import { DataTable } from "./PagesTable"
 import { DateRange } from "react-day-picker"
 import MetricsCalendar from "./organisms/MetricsCalendar"
@@ -161,7 +162,11 @@ export default function DomainDashboard({ url }: Props) {
                 </div>
             </CardFooter> */}
 
-            <DataTable columns={columns} data={pageData} />
+            <div className="flex gap-2 justify-between bg-inherit items-start">
+                <DataTable columns={columns} data={pageData} />
+                <DataTable columns={queryColumns} data={[]} />
+            </div>
+
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
