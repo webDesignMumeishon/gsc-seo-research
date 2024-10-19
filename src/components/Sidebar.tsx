@@ -28,7 +28,6 @@ export default function Sidebar({ setMenu, menu }: Props) {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            console.log('handleClickOutside', sidebarRef)
             if (
                 sidebarRef.current &&
                 !sidebarRef.current.contains(event.target as Node)

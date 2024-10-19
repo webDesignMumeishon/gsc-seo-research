@@ -43,6 +43,7 @@ export default function DomainDashboard({ url }: Props) {
     const [pageData, setPageData] = useState<PageMetrics[]>([])
     const [dateData, setDateData] = useState<DateMetrics[]>([])
     const [queryData, setQueryData] = useState<QueryMetrics[]>([])
+    const [queryData2, setQueryData2] = useState<QueryMetrics[]>([])
 
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
@@ -101,27 +102,34 @@ export default function DomainDashboard({ url }: Props) {
         return date.getDay()
     }
 
-    useEffect(() => {
-        const fetchData = async (startDate: Date, endDate: Date) => {
-            const [pageData, dateData, queryData] = await Promise.all([
-                GetPagesMetrics(userIdClerk, url, startDate, endDate),
-                GetDateMetrics(userIdClerk, url, startDate, endDate),
-                GetQueriesMetrics(userIdClerk, url, startDate, endDate)
-            ])
-            setPageData(pageData)
-            setDateData(dateData)
-            setQueryData(queryData)
-        }
+    const fetchData = useCallback(async (startDate: Date, endDate: Date) => {
+        GetPagesMetrics(userIdClerk, url, startDate, endDate).then(pageMetrics => {
+            setPageData(pageMetrics);
+        })
 
+        GetDateMetrics(userIdClerk, url, startDate, endDate).then(dateMetrics => {
+            setDateData(dateMetrics);
+        })
+
+        GetQueriesMetrics(userIdClerk, url, startDate, endDate).then(queryMetrics => {
+            setQueryData(queryMetrics);
+        })
+
+        const [, queryData2] = await Promise.all([
+            GetPagesMetrics(userIdClerk, url, moment(startDate).subtract(30, 'day').toDate(), moment(endDate).subtract(30, 'day').toDate()),
+            GetQueriesMetrics(userIdClerk, url, moment(startDate).subtract(30, 'day').toDate(), moment(endDate).subtract(30, 'day').toDate()),
+        ]);
+        setQueryData2(queryData2);
+    }, [userIdClerk, url]);
+
+    useEffect(() => {
         if (dateRange.from !== undefined && dateRange.to !== undefined) {
             fetchData(dateRange.from, dateRange.to)
         }
-
     }, [dateRange])
 
     return (
         <div className="w-ful">
-
             <MetricsCalendar date={dateRange} setDate={setDateRange} />
 
             <CardHeader>
@@ -164,7 +172,7 @@ export default function DomainDashboard({ url }: Props) {
 
             <div className="flex gap-6 justify-between bg-inherit items-start">
                 <DataTable columns={columns} data={pageData} />
-                <DataTable columns={queryColumns} data={queryData} />
+                <DataTable columns={queryColumns} data={queryData} compareData={queryData2} />
             </div>
 
 
