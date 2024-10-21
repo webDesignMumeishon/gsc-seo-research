@@ -1,7 +1,16 @@
 import { webmasters_v3 } from "googleapis";
 
-export type GoogleAPISitesList = webmasters_v3.Schema$WmxSite[]
-export type GoogleApiDataRaw = webmasters_v3.Schema$ApiDataRow
+type GoogleSearchConsoleRequestRaw = webmasters_v3.Schema$SearchAnalyticsQueryRequest
+type GoogleSearchConsoleResponseRaw = webmasters_v3.Schema$SearchAnalyticsQueryResponse
+// type GoogleAPISitesList = webmasters_v3.Schema$WmxSite[]
+type GoogleApiDataRaw = webmasters_v3.Schema$ApiDataRow
+
+
+export type DimensionFilterGroups = webmasters_v3.Schema$ApiDimensionFilterGroup
+export type Dimension = 'query' | 'page' | 'date'
+
+export type GoogleSearchConsoleRequest = GoogleSearchConsoleRequestRaw
+export type GoogleSearchConsoleResponse = GoogleSearchConsoleResponseRaw
 
 export type GoogleMetrics = Required<Pick<GoogleApiDataRaw, 'clicks' | 'ctr' | 'position' | 'impressions'>>;
 

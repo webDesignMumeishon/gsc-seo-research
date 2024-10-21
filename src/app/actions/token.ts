@@ -20,15 +20,16 @@ export async function GetUserToken(userId: string, siteUrl: string): Promise<{
             token: true
         },
     });
-
     if (site?.token !== undefined) {
-        TokenService.refreshToken(site.token)
+        await TokenService.refreshToken(site.token)
         return site.token
     }
     else {
         throw new Error('Missing token')
     }
 }
+
+
 
 export async function GetUserTokenByTokenId(subId: string) {
     const token = await prisma.token.findFirst({

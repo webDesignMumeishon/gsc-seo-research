@@ -1,6 +1,8 @@
 import { oauth2Client } from "@/lib/oauth2-client";
 import prisma from "@/lib/prisma";
+import { GET_USER_TOKEN } from "@/utils";
 import { Token } from "@prisma/client";
+import { revalidateTag } from "next/cache";
 
 class TokenService {
     public static async refreshToken(token: Token) {
@@ -17,12 +19,29 @@ class TokenService {
                     expiry_date: new Date(newTokens.credentials.expiry_date!),
                 },
             });
+            revalidateTag(GET_USER_TOKEN)
         }
     }
 
+    public static async getUserToken(userId: string, siteUrl: string) {
+        const site = await prisma.site.findFirst({
+            where: {
+                userId,
+                url: siteUrl
+            },
+            include: {
+                token: true
+            },
+        });
 
-
-
+        if (site?.token !== undefined) {
+            TokenService.refreshToken(site.token)
+            return site.token
+        }
+        else {
+            throw new Error('Missing token')
+        }
+    }
 }
 
 export default TokenService
