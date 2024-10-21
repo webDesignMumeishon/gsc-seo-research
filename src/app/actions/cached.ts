@@ -2,14 +2,14 @@
 
 import { unstable_cache } from "next/cache";
 import { GetSites } from "./sites";
-import { GET_PAGES_LIST_TAG, GET_USER_TOKEN, GLOBAL_REVALIDATE_CACHE_SECONDS, SITES_LIST_CACHE_TAG } from "@/utils";
+import { GET_PAGES_LIST_TAG, GET_SITE_TOKEN, GLOBAL_REVALIDATE_CACHE_SECONDS, SITES_LIST_CACHE_TAG } from "@/utils";
 import { PagesQueryCount } from "./google";
-import { GetUserToken } from "./token";
+import { GetSiteToken } from "./token";
 
-export const cachedGetUserToken = unstable_cache(
-    async (userId: string, siteUrl: string) => { return GetUserToken(userId, siteUrl); },
-    ['user-token'],
-    { tags: [GET_USER_TOKEN], revalidate: GLOBAL_REVALIDATE_CACHE_SECONDS }
+export const cachedGetSiteToken = unstable_cache(
+    async (userId: string, siteUrl: string) => { return GetSiteToken(userId, siteUrl); },
+    ['site-token'],
+    { tags: [GET_SITE_TOKEN], revalidate: GLOBAL_REVALIDATE_CACHE_SECONDS }
 );
 
 export const cachedGetSites = unstable_cache(

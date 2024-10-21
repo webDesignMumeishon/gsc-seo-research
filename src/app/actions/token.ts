@@ -1,7 +1,20 @@
 "use server"
 import prisma from "../../lib/prisma"
 import TokenService from '@/services/token';
+import { cachedGetSiteToken } from "./cached";
 
+
+export async function GetSiteToken(userId: string, siteUrl: string) {
+    return prisma.site.findFirst({
+        where: {
+            userId,
+            url: siteUrl
+        },
+        include: {
+            token: true
+        },
+    });
+}
 
 export async function GetUserToken(userId: string, siteUrl: string): Promise<{
     id: number;
@@ -11,18 +24,10 @@ export async function GetUserToken(userId: string, siteUrl: string): Promise<{
     refresh_token: string;
     userId: string;
 }> {
-    const site = await prisma.site.findFirst({
-        where: {
-            userId,
-            url: siteUrl
-        },
-        include: {
-            token: true
-        },
-    });
+    const site = await cachedGetSiteToken(userId, siteUrl)
+
     if (site?.token !== undefined) {
-        await TokenService.refreshToken(site.token)
-        return site.token
+        return TokenService.refreshToken(site.token)!
     }
     else {
         throw new Error('Missing token')

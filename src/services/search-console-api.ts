@@ -1,4 +1,4 @@
-import { cachedGetUserToken } from "@/app/actions/cached";
+import { GetUserToken } from "@/app/actions/token";
 import { Dimension, DimensionFilterGroups, GoogleDataRow, GoogleSearchConsoleRequest, GoogleSearchConsoleResponse } from "@/types/googleapi";
 import DateService from "@/utils/dateService";
 import axios from "axios";
@@ -24,7 +24,7 @@ class SearchConsoleApi {
     private static async apiClient(userId: string, requestBody: GoogleSearchConsoleRequest, domain: string) {
         const apiUrl = `https://searchconsole.googleapis.com/webmasters/v3/sites/${domain}/searchAnalytics/query`;
 
-        const accessToken = (await cachedGetUserToken(userId, domain)).access_token
+        const accessToken = (await GetUserToken(userId, domain)).access_token
 
         return axios.post<GoogleSearchConsoleResponse>(apiUrl, requestBody, {
             headers: {
