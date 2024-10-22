@@ -2,8 +2,10 @@
 import { useState, useCallback, useMemo, useEffect } from "react"
 import moment from "moment"
 import {
+    Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -30,8 +32,6 @@ import { DateRange } from "react-day-picker"
 import MetricsCalendar from "./organisms/MetricsCalendar"
 import { useSiteContext } from "@/context/SiteContext"
 import SearchConsoleApi from "@/services/search-console-api"
-import { YYYYMMDD } from "@/utils/dateService"
-
 
 type Props = {
     url: string
@@ -49,11 +49,6 @@ export default function DomainDashboard({ url }: Props) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
     const [dateRange, setDateRange] = useState<DateRange>({ from: moment().subtract(260, 'days').toDate(), to: moment().toDate() })
-
-    const displayData = useMemo(
-        () => isMonthly ? aggregateMonthlyData(dateData) : dateData,
-        [dateData, isMonthly]
-    )
 
     const handleDataPointClick = useCallback((data: CategoricalChartState) => {
         setSelectedPoint(data)
@@ -118,25 +113,10 @@ export default function DomainDashboard({ url }: Props) {
         <div className="w-ful">
             <MetricsCalendar date={dateRange} setDate={setDateRange} />
 
-            <CardHeader>
-                <CardTitle>Area Chart - {isMonthly ? "Monthly" : "Daily"} Gradient with Notes</CardTitle>
-                <CardDescription>
-                    Showing total visitors for the year 2024. Click on a data point to add or edit a note.
-                </CardDescription>
-                <div className="flex items-center space-x-2">
-                    <Switch
-                        id="view-mode"
-                        checked={isMonthly}
-                        onCheckedChange={setIsMonthly}
-                    />
-                    <Label htmlFor="view-mode">
-                        {isMonthly ? "Monthly View" : "Daily View"}
-                    </Label>
-                </div>
-            </CardHeader>
+         
             <CardContent>
                 <DateGraph
-                    displayData={displayData}
+                    data={dateData}
                     CustomTooltip={CustomTooltip}
                     handleDataPointClick={handleDataPointClick}
                     isMonthly={isMonthly}
