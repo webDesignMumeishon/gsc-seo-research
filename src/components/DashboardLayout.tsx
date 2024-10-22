@@ -12,7 +12,7 @@ const DashboardLayoutWrapper = ({ children }: Props) => {
 
     return (
         <>
-            <div className='flex min-h-10 bg-gray-100'>
+            <div className='flex min-h-10 bg-gray-100' >
                 <Sidebar setMenu={setIsSidebarOpen} menu={isSidebarOpen} />
 
                 <div className='ml-auto p-2'>
@@ -26,8 +26,8 @@ const DashboardLayoutWrapper = ({ children }: Props) => {
 
             </div>
             <div className={`flex min-h-screen bg-gray-100 ${isSidebarOpen && 'pointer-events-none'}`}>
-                <div className='flex flex-col w-full'>
-                    <div className='px-6'>
+                <div className='flex flex-col w-full items-center'>
+                    <div className='px-6 max-w-[80rem]'>
                         {children}
                     </div>
                 </div>
