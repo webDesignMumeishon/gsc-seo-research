@@ -96,8 +96,6 @@ const DateGraph = ({ data, handleDataPointClick, CustomTooltip, isMonthly }: Pro
         });
     }, [displayData]);
 
-    console.log(modifiedData)
-
     return (
         <div>
             <CardHeader>

@@ -52,7 +52,7 @@ export default function Sidebar({ setMenu, menu }: Props) {
     }
 
     return (
-        <div className='absolute bg-white' style={{ zIndex: '1000' }} ref={sidebarRef} aria-hidden="true">
+        <div className='absolute bg-white rounded-lg' style={{ zIndex: '1000' }} ref={sidebarRef} aria-hidden="true">
             <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
                 <div className="p-2 flex align-middle items-center">
                     <h2 className="text-md font-semibold tracking-tight">
