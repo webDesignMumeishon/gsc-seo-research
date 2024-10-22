@@ -82,10 +82,10 @@ export default function DomainDashboard({ url }: Props) {
             return (
                 <div className="bg-background border rounded p-4 shadow-lg">
                     <p className="font-bold">{label}</p>
-                    <p>Clicks: {data.clicks}</p>
-                    <p>Impressions: {data.impressions}</p>
-                    <p>Position: {Math.round(data.position)}</p>
-                    <p>CTR: {Math.round(data.ctr)}%</p>
+                    <p>Clicks: {data.clicks !== null ? data.clicks : data.clicksDotted}</p>
+                    <p>Impressions:{data.impressions !== null ? data.impressions : data.impressionsDotted}</p>
+                    <p>Position: {data.position !== null ? Math.round(data.position) : Math.round(data.positionDotted)} { }</p>
+                    <p>CTR: {data.ctr !== null ? Math.round(data.ctr) : Math.round(data.ctrDotted)}% </p>
                     {data.note && <p className="mt-2">Note: {data.note}</p>}
                     <p className="mt-2 text-sm text-muted-foreground">Click to add/edit note</p>
                 </div>
@@ -152,19 +152,6 @@ export default function DomainDashboard({ url }: Props) {
                     tickFormatterCallback={tickFormatter}
                 />
             </CardContent>
-
-            {/* <CardFooter>
-                <div className="flex w-full items-start gap-2 text-sm">
-                    <div className="grid gap-2">
-                        <div className="flex items-center gap-2 font-medium leading-none">
-                            Trending up by 3.8% this year <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                            Year 2024 data
-                        </div>
-                    </div>
-                </div>
-            </CardFooter> */}
 
             <div className="flex gap-6 justify-between bg-inherit items-start">
                 <DataTable columns={columns} data={pageData} />

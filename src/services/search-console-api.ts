@@ -1,7 +1,8 @@
 import { GetUserToken } from "@/app/actions/token";
 import { Dimension, DimensionFilterGroups, GoogleDataRow, GoogleSearchConsoleRequest, GoogleSearchConsoleResponse } from "@/types/googleapi";
-import DateService from "@/utils/dateService";
+import DateService, { YYYYMMDD } from "@/utils/dateService";
 import axios from "axios";
+import moment from "moment";
 
 class Request implements GoogleSearchConsoleRequest {
     public startDate: string
@@ -18,6 +19,20 @@ class Request implements GoogleSearchConsoleRequest {
         this.aggregationType = aggregationType
         this.dimensionFilterGroups = dimensionFilterGroups
     }
+}
+
+function getDatesInRange(startDate: Date, endDate: Date): Record<string, any> {
+    const dateArray: YYYYMMDD[] = [];
+    const dateObject: Record<string, any> = {};
+    let currentDate = new Date(startDate); // Create a new Date object to avoid modifying the original
+
+    while (currentDate <= moment(endDate).subtract(1, 'day').toDate()) {
+        const formattedDate = DateService.formatDateYYYYMMDD(currentDate); // Format date as 'YYYY-MM-DD'
+        dateObject[formattedDate] = null; // You can assign any value you want here
+        currentDate.setDate(currentDate.getDate() + 1); // Increment by 1 day
+    }
+
+    return dateObject;
 }
 
 class SearchConsoleApi {
@@ -57,26 +72,43 @@ class SearchConsoleApi {
     public static async dateMetrics(userId: string, startDate: Date, endDate: Date, domain: string) {
         const request = new Request(startDate, endDate, ['date'])
         const response = await this.apiClient(userId, request, domain)
+        const objectRange = getDatesInRange(startDate, endDate)
+        let lastDate: string = response.data.rows?.[response.data.rows.length - 1].keys?.[0]!
 
-        const result = response.data.rows?.reduce<{ [key: string]: GoogleDataRow }>((acc: any, curr: any) => {
-            const dayKey = curr?.keys?.[0] as string
-            const clicks = curr.clicks || 0
-            const ctr = (curr.ctr! * 100) || 0
-            const impressions = curr.impressions || 0
-            const position = curr.position || 0
+        const result = Object.keys(objectRange).reduce<{ [key: string]: any }>((acc: any, curr: string) => {
+            const row = response.data.rows?.find(row => row.keys?.[0] === curr)
 
-            if (!acc[dayKey]) {
-                acc[dayKey] = {
+            if (row !== undefined) {
+                const clicks = row.clicks || 0
+                const ctr = (row.ctr! * 100) || 0
+                const impressions = row.impressions || 0
+                const position = row.position || 0
+
+                acc[row.keys?.[0] as string] = {
+                    date: curr,
                     clicks,
                     ctr,
                     impressions,
                     position,
                 }
+
+                lastDate = curr
+            }
+            else {
+                if (new Date(curr) < new Date(lastDate)) {
+                    acc[curr] = {
+                        date: curr,
+                        clicks: 0,
+                        ctr: 0,
+                        impressions: 0,
+                        position: 0,
+                    }
+                }
             }
 
             return acc
-        }, {})
 
+        }, {})
         if (result === undefined) {
             return []
         }

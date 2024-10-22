@@ -17,7 +17,7 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
         const lastIndex = displayData.length - 1;
         const secondLastIndex = lastIndex - 1;
 
-        return displayData.map((item, index) => {
+        return displayData.map((item: any, index: any) => {
             if (index === lastIndex) {
                 return {
                     ...item,
@@ -47,6 +47,8 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
             return item;
         });
     }, [displayData]);
+
+    console.log(modifiedData)
 
     return (
         <ResponsiveContainer width="100%" height={350}>
