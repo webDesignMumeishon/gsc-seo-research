@@ -1,16 +1,22 @@
 import React, { useMemo } from 'react'
 import { DateMetrics } from "@/types/googleapi"
-import { Area, AreaChart, XAxis, Tooltip, ResponsiveContainer } from "recharts"
+import { Area, AreaChart, XAxis, Tooltip, ResponsiveContainer, CartesianGrid, YAxis, Line, CartesianAxis } from "recharts"
+import ISO8601 from '@/utils/ISO8601'
+import { YYYYMMDD } from '@/utils/dateService'
 
 type Props = {
     displayData: DateMetrics[]
     handleDataPointClick: any
-    tickFormatterCallback: any
+    isMonthly: boolean
     CustomTooltip: any
 }
 
-const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, CustomTooltip }: Props) => {
+const fillOpacityValue = 0.5
+const strokeWidthValue = 1.5
+const fillOpacityDottedValue = 0
 
+const DateGraph = ({ displayData, handleDataPointClick, CustomTooltip, isMonthly }: Props) => {
+    
     const modifiedData = useMemo(() => {
         if (displayData.length < 2) return displayData;
 
@@ -48,8 +54,6 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
         });
     }, [displayData]);
 
-    console.log(modifiedData)
-
     return (
         <ResponsiveContainer width="100%" height={350}>
             <AreaChart
@@ -64,9 +68,23 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
             >
                 <XAxis
                     dataKey="date"
-                    tickFormatter={tickFormatterCallback}
+                    tickFormatter={(value: YYYYMMDD): string => {
+                        const date = new ISO8601(value)
+                        if (isMonthly) {
+                            return date.getYearMonth()
+                        }
+                        return date.getMonthDay()
+                    }}
+                    tickLine={true}
+                    minTickGap={25}
                 />
+
                 <Tooltip content={<CustomTooltip />} />
+
+                <YAxis
+                    dataKey="position"
+                />
+
                 <defs>
                     <linearGradient id="colorClick" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#4285f4" stopOpacity={0.5} />
@@ -90,59 +108,65 @@ const DateGraph = ({ displayData, handleDataPointClick, tickFormatterCallback, C
 
                 </defs>
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="clicks"
                     stroke="#4285f4"
-                    fillOpacity={0.5}
+                    fillOpacity={fillOpacityValue}
+                    strokeWidth={strokeWidthValue}
                     fill="url(#colorClick)"
+                    connectNulls={true}
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="clicksDotted"
                     stroke="#4285f4"
-                    fillOpacity={0}
+                    fillOpacity={fillOpacityDottedValue}
                     strokeDasharray="3 3"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="impressions"
                     stroke="#5e35b1"
-                    fillOpacity={0.5}
+                    strokeLinecap='round'
+                    strokeWidth={strokeWidthValue}
+                    fillOpacity={fillOpacityValue}
                     fill="url(#colorImpressions)"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="impressionsDotted"
                     stroke="#5e35b1"
-                    fillOpacity={0}
+                    fillOpacity={fillOpacityDottedValue}
                     strokeDasharray="3 3"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="position"
                     stroke="#e87109"
-                    fillOpacity={0.5}
+                    strokeWidth={strokeWidthValue}
+                    fillOpacity={fillOpacityValue}
                     fill="url(#colorPosition)"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="positionDotted"
                     stroke="#e87109"
-                    fillOpacity={0}
+                    fillOpacity={fillOpacityDottedValue}
                     strokeDasharray="3 3"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="ctr"
                     stroke="#00897b"
-                    fillOpacity={1}
+                    strokeWidth={strokeWidthValue}
+                    fillOpacity={fillOpacityValue}
                     fill="url(#colorCTR)"
                 />
                 <Area
-                    type="monotone"
+                    type="linear"
                     dataKey="ctrDotted"
                     stroke="#00897b"
-                    fillOpacity={0}
+                    fillOpacity={fillOpacityDottedValue}
                     strokeDasharray="3 3"
                 />
             </AreaChart>

@@ -30,6 +30,7 @@ import { DateRange } from "react-day-picker"
 import MetricsCalendar from "./organisms/MetricsCalendar"
 import { useSiteContext } from "@/context/SiteContext"
 import SearchConsoleApi from "@/services/search-console-api"
+import { YYYYMMDD } from "@/utils/dateService"
 
 
 type Props = {
@@ -39,18 +40,15 @@ type Props = {
 
 export default function DomainDashboard({ url }: Props) {
     const { userIdClerk } = useSiteContext();
-
     const [pageData, setPageData] = useState<PageMetrics[]>([])
     const [dateData, setDateData] = useState<DateMetrics[]>([])
     const [queryData, setQueryData] = useState<QueryMetrics[]>([])
-    // const [queryData2, setQueryData2] = useState<QueryMetrics[]>([])
 
     const [isMonthly, setIsMonthly] = useState(false)
     const [selectedPoint, setSelectedPoint] = useState<CategoricalChartState | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [currentNote, setCurrentNote] = useState("")
-    const [dateRange, setDateRange] = useState<DateRange>({ from: moment().subtract(30, 'days').toDate(), to: moment().toDate() })
-
+    const [dateRange, setDateRange] = useState<DateRange>({ from: moment().subtract(260, 'days').toDate(), to: moment().toDate() })
 
     const displayData = useMemo(
         () => isMonthly ? aggregateMonthlyData(dateData) : dateData,
@@ -92,14 +90,6 @@ export default function DomainDashboard({ url }: Props) {
             )
         }
         return null
-    }
-
-    const tickFormatter = (value: string) => {
-        const date = new ISO8601(value)
-        if (isMonthly) {
-            return date.getYearMonth()
-        }
-        return date.getDay()
     }
 
     const fetchData = useCallback(async (startDate: Date, endDate: Date) => {
@@ -149,7 +139,7 @@ export default function DomainDashboard({ url }: Props) {
                     displayData={displayData}
                     CustomTooltip={CustomTooltip}
                     handleDataPointClick={handleDataPointClick}
-                    tickFormatterCallback={tickFormatter}
+                    isMonthly={isMonthly}
                 />
             </CardContent>
 

@@ -21,7 +21,7 @@ type SelectDate = '7d' | '30d' | '90d' | '120d' | '260d' | 'custom'
 
 
 const MetricsCalendar = ({ date, setDate }: Props) => {
-    const [selectDate, setSelectDate] = useState<SelectDate>('30d')
+    const [selectDate, setSelectDate] = useState<SelectDate>('260d')
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
     const handleDateRangeChange = (value: SelectDate) => {

@@ -1,6 +1,7 @@
 import { GetUserToken } from "@/app/actions/token";
-import { Dimension, DimensionFilterGroups, GoogleDataRow, GoogleSearchConsoleRequest, GoogleSearchConsoleResponse } from "@/types/googleapi";
+import { Dimension, DimensionFilterGroups, GoogleSearchConsoleRequest, GoogleSearchConsoleResponse } from "@/types/googleapi";
 import DateService, { YYYYMMDD } from "@/utils/dateService";
+import ISO8601 from "@/utils/ISO8601";
 import axios from "axios";
 import moment from "moment";
 
@@ -13,8 +14,8 @@ class Request implements GoogleSearchConsoleRequest {
     public aggregationType: string | null
 
     constructor(startDate: Date, endDate: Date, dimensions: Dimension[] = [], aggregationType = null, dimensionFilterGroups?: []) {
-        this.startDate = DateService.formatDateYYYYMMDD(startDate)
-        this.endDate = DateService.formatDateYYYYMMDD(endDate)
+        this.startDate = ISO8601.converToISO8601(startDate)
+        this.endDate = ISO8601.converToISO8601(endDate)
         this.dimensions = dimensions
         this.aggregationType = aggregationType
         this.dimensionFilterGroups = dimensionFilterGroups

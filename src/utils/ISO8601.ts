@@ -1,8 +1,13 @@
 // YYYY-MM-DD > 2024-06-02
-class ISO8601 {
-    public date: string
 
-    constructor(date: string) {
+import moment from "moment";
+import { YYYYMMDD } from "./dateService";
+
+
+class ISO8601 {
+    public date: YYYYMMDD
+
+    constructor(date: YYYYMMDD) {
         this.date = date
     }
 
@@ -12,6 +17,14 @@ class ISO8601 {
 
     getYearMonth(): string {
         return this.date.slice(0, 7)
+    }
+
+    getMonthDay() {
+        return moment(this.date).format("MMM D");
+    }
+
+    static converToISO8601(date: Date) {
+        return moment(date).format('YYYY-MM-DD') as YYYYMMDD;
     }
 }
 
