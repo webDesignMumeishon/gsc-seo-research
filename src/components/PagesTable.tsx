@@ -130,7 +130,7 @@ export function DataTable<TData, TValue>({ columns, data, compareData }: DataTab
 
     return (
         <div className="rounded-md bg-slate-50 p-2 flex-1">
-            <div className="min-h-[600px]">
+            <div className="h-[650px]">
                 <Table >
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
