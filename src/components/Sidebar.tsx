@@ -39,7 +39,7 @@ export default function Sidebar({ setMenu, menu }: Props) {
                 <div className="p-2 flex align-middle items-center">
                     <h2 className="text-md font-semibold tracking-tight p-2">
                         <Link href="/">
-                            <Image src="/logo-100x100.png" alt="Console Insight Logo" width={160} height={50} />
+                            <Image src="/logo-100x100.png" alt="Console Insight Logo" width={160} height={50} className='min-w-[110px]'/>
                         </Link>
                     </h2>
                     <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600' onClick={() => setMenu(false)} />
