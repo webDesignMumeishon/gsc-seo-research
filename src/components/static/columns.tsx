@@ -17,6 +17,11 @@ export const columns: ColumnDef<PageMetrics>[] = [
     {
         accessorKey: "page",
         header: () => <div>Pages</div>,
+        cell: (cell) => {
+            return (
+                <div>{new URL(cell.getValue<string>()).pathname}</div>
+            )
+        },
     },
     {
         accessorKey: "impressions",
