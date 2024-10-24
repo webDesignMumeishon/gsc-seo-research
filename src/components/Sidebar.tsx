@@ -58,7 +58,6 @@ export default function Sidebar({ setMenu, menu }: Props) {
                                 )}
                                 onClick={() => {
                                     setActiveItem(item.name)
-                                    setMenu(false)
                                 }}
                                 asChild
                             >
