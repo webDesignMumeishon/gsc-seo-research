@@ -40,7 +40,11 @@ type Props = {
 
 export default function DomainDashboard({ url }: Props) {
     const { userIdClerk } = useSiteContext();
+
+    // Pages
     const [pageData, setPageData] = useState<PageMetrics[]>([])
+    const [comparePageData, setComparePageData] = useState<PageMetrics[]>([])
+
     const [dateData, setDateData] = useState<DateMetrics[]>([])
     const [queryData, setQueryData] = useState<QueryMetrics[]>([])
 
@@ -97,7 +101,7 @@ export default function DomainDashboard({ url }: Props) {
             SearchConsoleApi.queriesMetrics(userIdClerk, moment(startDate).subtract(30, 'day').toDate(), moment(endDate).subtract(30, 'day').toDate(), url),
         ]).then(results => {
             const [pagesMetrics, queryMetrics] = results
-            setPageData(pagesMetrics)
+            setComparePageData(pagesMetrics)
             setQueryData(queryMetrics)
         })
 
@@ -122,7 +126,7 @@ export default function DomainDashboard({ url }: Props) {
             </CardContent>
 
             <div className="flex gap-6 justify-between bg-inherit items-start">
-                <DataTable columns={columns} data={pageData} />
+                <DataTable<PageMetrics, any> columns={columns} data={pageData} compareData={comparePageData}/>
                 <DataTable columns={queryColumns} data={queryData} />
             </div>
 
