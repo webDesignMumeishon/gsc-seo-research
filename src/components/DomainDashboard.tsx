@@ -114,7 +114,7 @@ export default function DomainDashboard({ url }: Props) {
     }, [dateRange])
 
     return (
-        <div className="w-ful">
+        <div>
             <CardContent>
                 <MetricsCalendar date={dateRange} setDate={setDateRange} />
                 <DateGraph
