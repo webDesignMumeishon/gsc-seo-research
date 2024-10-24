@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Link from 'next/link'
 import { BarChart2, ClipboardListIcon, SearchIcon, ServerIcon, } from 'lucide-react'
 
@@ -24,24 +24,6 @@ type Props = {
 
 export default function Sidebar({ setMenu, menu }: Props) {
     const [activeItem, setActiveItem] = useState('Dashboard')
-    const sidebarRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                sidebarRef.current &&
-                !sidebarRef.current.contains(event.target as Node)
-            ) {
-                setMenu(false)
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [])
-
 
     if (!menu) {
         return (
@@ -52,15 +34,15 @@ export default function Sidebar({ setMenu, menu }: Props) {
     }
 
     return (
-        <div className='absolute bg-white rounded-lg' style={{ zIndex: '1000' }} ref={sidebarRef} aria-hidden="true">
+        <div className='bg-white rounded-lg' style={{ zIndex: '1000' }}>
             <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
                 <div className="p-2 flex align-middle items-center">
-                    <h2 className="text-md font-semibold tracking-tight">
+                    <h2 className="text-md font-semibold tracking-tight p-2">
                         <Link href="/">
-                            <Image src="/logo-295x100.png" alt="Console Insight Logo" width={200} height={100} />
+                            <Image src="/logo-100x100.png" alt="Console Insight Logo" width={160} height={50} />
                         </Link>
                     </h2>
-                    <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600 relative bottom-[2px]' onClick={() => setMenu(false)} />
+                    <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600' onClick={() => setMenu(false)} />
                 </div>
                 <ScrollArea className="flex-1">
                     <nav className="grid gap-1 px-2">

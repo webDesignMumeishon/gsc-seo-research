@@ -128,20 +128,20 @@ export function DataTable<TData, TValue>({ columns, data, compareData }: DataTab
         )
     }
 
-    function calculate(row: any, column: any) {
-        if (compareData !== undefined) {
-            const filtered = compareData?.find(compareRow => compareRow?.[column] === row[column])
-            const currentSixMonthImpressions = row[column.id]
-            const previousSixMonthImpressions = filtered[column.id];
+    // function calculate(row: any, column: any) {
+    //     if (compareData !== undefined) {
+    //         const filtered = compareData?.find(compareRow => compareRow?.[column] === row[column])
+    //         const currentSixMonthImpressions = row[column.id]
+    //         const previousSixMonthImpressions = filtered[column.id];
 
-            const percentageIncrease = previousSixMonthImpressions > 0
-                ? ((currentSixMonthImpressions - previousSixMonthImpressions) / previousSixMonthImpressions) * 100
-                : 0; // Handle the case where previous impressions are zero
+    //         const percentageIncrease = previousSixMonthImpressions > 0
+    //             ? ((currentSixMonthImpressions - previousSixMonthImpressions) / previousSixMonthImpressions) * 100
+    //             : 0; // Handle the case where previous impressions are zero
 
-                console.log('percentageIncrease', percentageIncrease, currentSixMonthImpressions, previousSixMonthImpressions, column.id)
-                return <p>{percentageIncrease}</p>
-        }
-    }
+    //             console.log('percentageIncrease', percentageIncrease, currentSixMonthImpressions, previousSixMonthImpressions, column.id)
+    //             return <p>{percentageIncrease}</p>
+    //     }
+    // }
 
     return (
         <div className="rounded-md bg-slate-50 p-2 flex-1">
@@ -180,7 +180,7 @@ export function DataTable<TData, TValue>({ columns, data, compareData }: DataTab
                                             {flexRender(cell.column.columnDef.cell,
                                                 cell.getContext())
                                             }
-                                            {calculate(row.original, cell.column)}
+                                            {/* {calculate(row.original, cell.column)} */}
                                         </TableCell>
                                     ))}
                                 </TableRow>
