@@ -26,7 +26,7 @@ const DashboardLayoutWrapper = ({ children }: Props) => {
                 <Sidebar setMenu={setIsSidebarOpen} menu={isSidebarOpen} />
 
                 <div className={`flex flex-col w-full items-center`}>
-                    <div className='px-6 max-w-[80rem] p-4'>
+                    <div className='px-2 max-w-[90rem] p-4'>
                         {children}
                     </div>
                 </div>
