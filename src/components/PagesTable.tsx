@@ -96,7 +96,7 @@ export function DataTable<TData extends GoogleMetrics, TValue>({ columns, data, 
                                             {(cell.column.id === 'page' || cell.column.id === 'query') && sorting.length > 0
                                                 ?
                                                 (
-                                                    <div className="relative cursor-pointer">
+                                                    <div className="relative">
                                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                         <div
                                                             className="absolute top-0 left-0 h-full rounded-sm bg-clicks/10"

@@ -13,7 +13,7 @@ export const columns: ColumnDef<PageMetrics>[] = [
         cell: (cell) => {
             return (
                 <div className="relative p-1">
-                    <p>
+                    <p className="cursor-pointer">
                         {new URL(cell.getValue<string>()).pathname}
                     </p>
                 </div>
