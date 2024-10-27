@@ -34,12 +34,12 @@ export default function Sidebar({ setMenu, menu }: Props) {
     }
 
     return (
-        <div className='bg-white rounded-r-xl' style={{ zIndex: '1000' }}>
-            <div className="flex min-h-screen flex-col border-r dark:bg-gray-800/40">
+        <div className='bg-white border-solid rounded-r-xl p-1' style={{ zIndex: '1000', border: '#e2e2e2 solid'}}>
+            <div className="flex min-h-screen flex-col  dark:bg-gray-800/40" >
                 <div className="p-2 flex align-middle items-center">
                     <h2 className="text-md font-semibold tracking-tight p-2">
                         <Link href="/">
-                            <Image src="/logo-100x100.png" alt="Console Insight Logo" width={160} height={50} className='min-w-[110px]'/>
+                            <Image src="/logo-100x100.png" alt="Console Insight Logo" width={160} height={50} className='min-w-[110px]' />
                         </Link>
                     </h2>
                     <ArrowLeftToLine size={20} className='cursor-pointer text-slate-600' onClick={() => setMenu(false)} />

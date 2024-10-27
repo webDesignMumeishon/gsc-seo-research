@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({ columns, data, compareData, dimension
     })
 
     return (
-        <div className="rounded-md bg-slate-50 p-2 flex-1">
+        <div className="rounded-md bg-slate-50 p-2 flex-1 border">
             <div className="h-[650px]">
                 <Table >
                     <TableHeader>
