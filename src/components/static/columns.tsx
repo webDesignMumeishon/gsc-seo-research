@@ -12,8 +12,8 @@ export const columns: ColumnDef<PageMetrics>[] = [
         header: () => <div>Pages</div>,
         cell: (cell) => {
             return (
-                <div className="relative p-1">
-                    <p className="cursor-pointer">
+                <div className="relative p-1 cursor-pointer">
+                    <p>
                         {new URL(cell.getValue<string>()).pathname}
                     </p>
                 </div>

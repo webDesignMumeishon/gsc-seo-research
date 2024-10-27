@@ -44,6 +44,7 @@ export default function DomainDashboard({ url }: Props) {
     // Pages
     const [pageData, setPageData] = useState<PageMetrics[]>([])
     const [comparePageData, setComparePageData] = useState<PageMetrics[]>([])
+    const [compareQueryData, setCompareQueryData] = useState<QueryMetrics[]>([])
 
     const [dateData, setDateData] = useState<DateMetrics[]>([])
     const [queryData, setQueryData] = useState<QueryMetrics[]>([])
@@ -102,7 +103,7 @@ export default function DomainDashboard({ url }: Props) {
         ]).then(results => {
             const [pagesMetrics, queryMetrics] = results
             setComparePageData(pagesMetrics)
-            setQueryData(queryMetrics)
+            setCompareQueryData(queryMetrics)
         })
 
     }, []);
@@ -126,8 +127,8 @@ export default function DomainDashboard({ url }: Props) {
             </CardContent>
 
             <div className="flex gap-6 justify-between bg-inherit items-start">
-                <DataTable<PageMetrics, any> columns={columns} data={pageData} compareData={comparePageData}/>
-                <DataTable columns={queryColumns} data={queryData} />
+                <DataTable<PageMetrics, PageMetrics> columns={columns} data={pageData} compareData={comparePageData} dataName='page'/>
+                <DataTable<QueryMetrics, QueryMetrics> columns={queryColumns} data={queryData} compareData={compareQueryData} dataName='query' />
             </div>
 
 

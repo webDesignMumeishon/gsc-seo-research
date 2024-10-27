@@ -8,7 +8,6 @@ import {
     getPaginationRowModel,
     SortingState,
     getSortedRowModel,
-    Cell,
 } from "@tanstack/react-table"
 import {
     Table,
@@ -20,16 +19,18 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import React, { useState } from "react"
-import { GoogleMetrics, PageMetrics } from "@/types/googleapi"
+import { Dimension, GoogleMetrics, PageMetrics } from "@/types/googleapi"
+import PercentageChange from "./molecules/PercentageChange"
 
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
-    compareData?: TData[]
+    compareData: TData[]
+    dimensionName: Dimension
 }
 
-export function DataTable<TData extends GoogleMetrics, TValue>({ columns, data, compareData }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, compareData, dimensionName }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [show, setShow] = useState(false)
 
@@ -92,7 +93,7 @@ export function DataTable<TData extends GoogleMetrics, TValue>({ columns, data, 
                                     className="border-none"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id} >
+                                        <TableCell key={cell.id}>
                                             {(cell.column.id === 'page' || cell.column.id === 'query') && sorting.length > 0
                                                 ?
                                                 (
@@ -105,7 +106,20 @@ export function DataTable<TData extends GoogleMetrics, TValue>({ columns, data, 
                                                         </div>
                                                     </div>
                                                 )
-                                                : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                :
+                                                (cell.column.id === 'page' || cell.column.id === 'query')
+                                                    ? flexRender(cell.column.columnDef.cell, cell.getContext())
+                                                    : <div className="flex justify-around items-center">
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                        <PercentageChange<TData>
+                                                            currentMetricValue={cell.getValue<number>()}
+                                                            metricColumn={cell.column.id as keyof TData}
+                                                            oldData={compareData.find(row => row?.[dimensionName as keyof TData] === dimensionName)}
+                                                        />
+                                                    </div>
+                                            }
+
+
                                         </TableCell>
                                     ))}
                                 </TableRow>
