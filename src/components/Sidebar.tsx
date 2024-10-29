@@ -34,7 +34,7 @@ export default function Sidebar({ setMenu, menu }: Props) {
     }
 
     return (
-        <div className='bg-white border-solid rounded-r-xl p-1' style={{ zIndex: '1000', border: '#e2e2e2 solid'}}>
+        <div className='bg-white border-solid rounded-r-xl p-1 border' style={{ zIndex: '1000'}}>
             <div className="flex min-h-screen flex-col  dark:bg-gray-800/40" >
                 <div className="p-2 flex align-middle items-center">
                     <h2 className="text-md font-semibold tracking-tight p-2">

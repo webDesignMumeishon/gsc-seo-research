@@ -26,8 +26,6 @@ const Connections = ({ userWebsites, subId, userId }: Props) => {
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 
-    console.log(userWebsites)
-
     const { toast } = useToast()
 
     const handleWebsiteToggle = (website: Site) => {

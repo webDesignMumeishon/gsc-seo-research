@@ -98,7 +98,7 @@ const DateGraph = ({ data, handleDataPointClick, CustomTooltip, isMonthly }: Pro
 
     return (
         <div>
-            <CardHeader>
+            {/* <CardHeader>
                 <CardTitle>Area Chart - {isMonthly ? "Monthly" : "Daily"} Gradient with Notes</CardTitle>
                 <CardDescription>
                     Showing total visitors for the year 2024. Click on a data point to add or edit a note.
@@ -112,7 +112,7 @@ const DateGraph = ({ data, handleDataPointClick, CustomTooltip, isMonthly }: Pro
                         {isMonthly ? "Monthly View" : "Daily View"}
                     </Label>
                 </div>
-            </CardHeader>
+            </CardHeader> */}
             <div className='flex justify-end'>
                 <Tabs
                     onValueChange={(value: string) => { setInterval(value as Interval) }}
